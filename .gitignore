@@ -1,0 +1,13 @@
+/bin/
+.*
+*.launch
+/art
+/research
+scratchpad.txt
+/eclipse
+/mcp
+/tags
+/logs
+/build
+/run
+
