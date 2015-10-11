@@ -1,6 +1,6 @@
 package com.hea3ven.tools.commonutils.mod;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.collect.Lists;
 
@@ -31,14 +31,19 @@ public class ProxyModBase {
 	public void registerEnchantments() {
 	}
 
-	public void registerBlocks() {
-	}
-
-	public ArrayList<Pair<String, IGuiHandler>> getGuiHandlers() {
+	public List<Pair<String, IGuiHandler>> getGuiHandlers() {
 		return Lists.newArrayList();
 	}
 
-	public ArrayList<Pair<String, Integer>> getBlockItems() {
+	public List<InfoBlock> getBlocks() {
+		return Lists.newArrayList();
+	}
+
+	public List<InfoBlockVariant> getVariantBlocks() {
+		return Lists.newArrayList();
+	}
+
+	public List<InfoTileEntity> getTileEntities() {
 		return Lists.newArrayList();
 	}
 
