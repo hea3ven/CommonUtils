@@ -36,38 +36,38 @@ public class ModInitializerClient extends ModInitializerCommon {
 	}
 
 	private void registerVariantBlocks(ProxyModBase proxy) {
-		for (InfoBlockVariant item : proxy.getVariantBlocks()) {
+		for (InfoBlockVariant block : proxy.getVariantBlocks()) {
 			List<String> variants = Lists.newArrayList();
-			for (Object metalObj : item.getVariantProp().getAllowedValues()) {
+			for (Object metalObj : block.getVariantProp().getAllowedValues()) {
 				IStringSerializable value = (IStringSerializable) metalObj;
-				String name = item.getDomain() + ":" + value.getName() + item.getVariantSuffix();
+				String name = block.getDomain() + ":" + value.getName() + block.getVariantSuffix();
 				variants.add(name);
 			}
-			ModelBakery.addVariantName(Item.getItemFromBlock(item.getBlock()),
+			ModelBakery.addVariantName(Item.getItemFromBlock(block.getBlock()),
 					variants.toArray(new String[variants.size()]));
 
-			ModelLoader.setCustomStateMapper(item.getBlock(),
+			ModelLoader.setCustomStateMapper(block.getBlock(),
 					(new StateMap.Builder())
-							.setProperty(item.getVariantProp())
-							.setBuilderSuffix(item.getVariantSuffix())
+							.setProperty(block.getVariantProp())
+							.setBuilderSuffix(block.getVariantSuffix())
 							.build());
 		}
 	}
 
 	private void registerBlocksItemModels(ProxyModBase proxy) {
 		ItemModelMesher itemMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-		for (InfoBlock item : proxy.getBlocks()) {
+		for (InfoBlock block : proxy.getBlocks()) {
 			for (int i = 0; i < 16; i++) {
-				itemMesher.register(Item.getItemFromBlock(item.getBlock()), i,
-						new ModelResourceLocation(item.getDomain() + ":" + item.getName(),
+				itemMesher.register(Item.getItemFromBlock(block.getBlock()), i,
+						new ModelResourceLocation(block.getDomain() + ":" + block.getName(),
 								"inventory"));
 			}
 		}
-		for (InfoBlockVariant item : proxy.getVariantBlocks()) {
-			for (Object valueObj : item.getVariantProp().getAllowedValues()) {
+		for (InfoBlockVariant block : proxy.getVariantBlocks()) {
+			for (Object valueObj : block.getVariantProp().getAllowedValues()) {
 				IStringSerializable value = (IStringSerializable) valueObj;
-				String name = item.getDomain() + ":" + value.getName() + item.getVariantSuffix();
-				itemMesher.register(Item.getItemFromBlock(item.getBlock()), item.getMeta(value),
+				String name = block.getDomain() + ":" + value.getName() + block.getVariantSuffix();
+				itemMesher.register(Item.getItemFromBlock(block.getBlock()), block.getMeta(value),
 						new ModelResourceLocation(name, "inventory"));
 			}
 		}

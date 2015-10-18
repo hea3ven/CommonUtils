@@ -13,9 +13,23 @@ public class InfoBlockVariant extends InfoBlock {
 	private Map<Object, Integer> variantMetas;
 
 	public InfoBlockVariant(Block block, String domain, String name,
+			Class<? extends ItemBlock> itemCls, Object[] itemArgs, IProperty variantProp,
+			String variantSuffix, Map<Object, Integer> variantMetas) {
+		super(block, domain, name, itemCls, itemArgs);
+		this.variantProp = variantProp;
+		this.variantSuffix = variantSuffix;
+		this.variantMetas = variantMetas;
+	}
+
+	public InfoBlockVariant(Block block, String domain, String name,
 			Class<? extends ItemBlock> itemCls, IProperty variantProp, String variantSuffix,
 			Map<Object, Integer> variantMetas) {
-		super(block, domain, name, itemCls);
+		this(block, domain, name, itemCls, null, variantProp, variantSuffix, variantMetas);
+	}
+
+	public InfoBlockVariant(Block block, String domain, String name, IProperty variantProp,
+			String variantSuffix, Map<Object, Integer> variantMetas) {
+		super(block, domain, name);
 		this.variantProp = variantProp;
 		this.variantSuffix = variantSuffix;
 		this.variantMetas = variantMetas;

@@ -23,17 +23,19 @@ public abstract class ModInitializerCommon {
 	}
 
 	private void registerBlocks(ProxyModBase proxy) {
-		for (InfoBlock item : proxy.getBlocks()) {
-			GameRegistry.registerBlock(item.getBlock(), item.getItemCls(), item.getName());
+		for (InfoBlock block : proxy.getBlocks()) {
+			GameRegistry.registerBlock(block.getBlock(), block.getItemCls(), block.getName(),
+					(block.getItemArgs() != null) ? block.getItemArgs() : new Object[0]);
 		}
 		for (InfoBlockVariant item : proxy.getVariantBlocks()) {
-			GameRegistry.registerBlock(item.getBlock(), item.getItemCls(), item.getName());
+			GameRegistry.registerBlock(item.getBlock(), item.getItemCls(), item.getName(),
+					(item.getItemArgs() != null) ? item.getItemArgs() : new Object[0]);
 		}
 	}
 
 	private void registerTileEntities(ProxyModBase proxy) {
-		for (InfoTileEntity item : proxy.getTileEntities()) {
-			GameRegistry.registerTileEntity(item.getTileClass(), item.getName());
+		for (InfoTileEntity tile : proxy.getTileEntities()) {
+			GameRegistry.registerTileEntity(tile.getTileClass(), tile.getName());
 		}
 	}
 
