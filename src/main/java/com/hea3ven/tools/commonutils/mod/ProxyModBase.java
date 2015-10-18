@@ -16,15 +16,15 @@ public class ProxyModBase {
 		this.modInitializer = modInitializer;
 	}
 
-	public final void onPreInitEvent() {
+	public void onPreInitEvent() {
 		modInitializer.onPreInitEvent(this);
 	}
 
-	public final void onInitEvent() {
+	public void onInitEvent() {
 		modInitializer.onInitEvent(this);
 	}
 
-	public final void onPostInitEvent() {
+	public void onPostInitEvent() {
 		modInitializer.onPostInitEvent(this);
 	}
 
