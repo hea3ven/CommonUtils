@@ -12,6 +12,7 @@ public abstract class ModInitializerCommon {
 		proxy.registerEnchantments();
 		registerBlocks(proxy);
 		registerTileEntities(proxy);
+		registerItems(proxy);
 	}
 
 	public void onInitEvent(ProxyModBase proxy) {
@@ -33,6 +34,12 @@ public abstract class ModInitializerCommon {
 	private void registerTileEntities(ProxyModBase proxy) {
 		for (InfoTileEntity item : proxy.getTileEntities()) {
 			GameRegistry.registerTileEntity(item.getTileClass(), item.getName());
+		}
+	}
+
+	private void registerItems(ProxyModBase proxy) {
+		for (InfoItem item : proxy.getItems()) {
+			GameRegistry.registerItem(item.getItem(), item.getName());
 		}
 	}
 

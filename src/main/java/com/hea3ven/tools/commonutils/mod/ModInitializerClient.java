@@ -57,9 +57,11 @@ public class ModInitializerClient extends ModInitializerCommon {
 	private void registerBlocksItemModels(ProxyModBase proxy) {
 		ItemModelMesher itemMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
 		for (InfoBlock item : proxy.getBlocks()) {
-			itemMesher.register(Item.getItemFromBlock(item.getBlock()), 0,
-					new ModelResourceLocation(item.getDomain() + ":" + item.getName(),
-							"inventory"));
+			for (int i = 0; i < 16; i++) {
+				itemMesher.register(Item.getItemFromBlock(item.getBlock()), i,
+						new ModelResourceLocation(item.getDomain() + ":" + item.getName(),
+								"inventory"));
+			}
 		}
 		for (InfoBlockVariant item : proxy.getVariantBlocks()) {
 			for (Object valueObj : item.getVariantProp().getAllowedValues()) {
@@ -67,6 +69,12 @@ public class ModInitializerClient extends ModInitializerCommon {
 				String name = item.getDomain() + ":" + value.getName() + item.getVariantSuffix();
 				itemMesher.register(Item.getItemFromBlock(item.getBlock()), item.getMeta(value),
 						new ModelResourceLocation(name, "inventory"));
+			}
+		}
+		for (InfoItem item : proxy.getItems()) {
+			for (int i = 0; i < 16; i++) {
+				itemMesher.register(item.getItem(), i, new ModelResourceLocation(
+						item.getDomain() + ":" + item.getName(), "inventory"));
 			}
 		}
 	}

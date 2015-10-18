@@ -47,4 +47,8 @@ public class ProxyModBase {
 		return Lists.newArrayList();
 	}
 
+	public List<InfoItem> getItems() {
+		return Lists.newArrayList();
+	}
+
 }
