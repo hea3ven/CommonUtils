@@ -18,9 +18,9 @@ public abstract class ContainerBase extends Container {
 		try {
 			Constructor<? extends Slot> ctor = cls.getConstructor(IInventory.class, Integer.TYPE,
 					Integer.TYPE, Integer.TYPE);
-			for (int y = 0; y < xSize; ++y) {
-				for (int x = 0; x < ySize; ++x) {
-					this.addSlotToContainer(ctor.newInstance(inv, slotOff + x + y * ySize,
+			for (int y = 0; y < ySize; ++y) {
+				for (int x = 0; x < xSize; ++x) {
+					this.addSlotToContainer(ctor.newInstance(inv, slotOff + x + y * xSize,
 							xOff + x * 18, yOff + y * 18));
 				}
 			}
