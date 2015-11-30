@@ -1,6 +1,7 @@
 /bin/
 .*
 *.launch
+*.iml
 /art
 /research
 scratchpad.txt

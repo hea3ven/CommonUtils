@@ -3,7 +3,7 @@ plugins {
     id 'net.minecraftforge.gradle.forge' version '2.0.1'
 }
 
-version = '1.0.0'
+version = '1.0.1'
 group = 'com.hea3ven.tools.commonutils'
 archivesBaseName = 'h3nt-commonutils'
 
@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-	compile 'com.google.guava:guava:15.0'
+	compile 'com.google.guava:guava:17.0'
 
     testCompile 'junit:junit:4.12'
 }
