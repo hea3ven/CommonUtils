@@ -48,8 +48,8 @@ public class ModInitializerClient extends ModInitializerCommon {
 
 			ModelLoader.setCustomStateMapper(block.getBlock(),
 					(new StateMap.Builder())
-							.setProperty(block.getVariantProp())
-							.setBuilderSuffix(block.getVariantSuffix())
+							.withName(block.getVariantProp())
+							.withSuffix(block.getVariantSuffix())
 							.build());
 		}
 	}

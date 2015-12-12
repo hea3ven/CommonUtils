@@ -19,19 +19,32 @@ public class GenericContainer extends ContainerBase {
 	private List<SlotType> slotsTypes = Lists.newArrayList();
 	private int playerSlotsStart = 0;
 
-	public GenericContainer addInputSlots(IInventory inv, int slotOff, int xOff, int yOff,
-			int xSize, int ySize) {
+	public GenericContainer addInputSlots(IInventory inv, int slotOff, int xOff, int yOff, int xSize,
+			int ySize) {
 		for (int i = 0; i < xSize * ySize; i++)
 			slotsTypes.add(SlotType.INPUT);
-		addInventoryGrid(inv, slotOff, xOff, yOff, xSize, ySize, SlotInput.class);
+		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotInput.class, inv);
 		return this;
 	}
 
-	public GenericContainer addOutputSlots(IInventory inv, int slotOff, int xOff, int yOff,
-			int xSize, int ySize) {
+	public GenericContainer addOutputSlots(IInventory inv, int slotOff, int xOff, int yOff, int xSize,
+			int ySize) {
 		for (int i = 0; i < xSize * ySize; i++)
 			slotsTypes.add(SlotType.OUTPUT);
-		addInventoryGrid(inv, slotOff, xOff, yOff, xSize, ySize, SlotOutput.class);
+		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotOutput.class, inv);
+		return this;
+	}
+
+	public GenericContainer addSlots(int slotOff, int xOff, int yOff, int xSize, int ySize,
+			Class<? extends Slot> slotCls, Object... args) {
+		return addSlots(SlotType.INPUT, slotOff, xOff, yOff, xSize, ySize, slotCls, args);
+	}
+
+	public GenericContainer addSlots(SlotType slotType, int slotOff, int xOff, int yOff, int xSize, int ySize,
+			Class<? extends Slot> slotCls, Object... args) {
+		for (int i = 0; i < xSize * ySize; i++)
+			slotsTypes.add(slotType);
+		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, slotCls, args);
 		return this;
 	}
 
@@ -63,6 +76,9 @@ public class GenericContainer extends ContainerBase {
 
 	@Override
 	public void detectAndSendChanges() {
+		if (updateHandler == null)
+			return;
+
 		super.detectAndSendChanges();
 		if (valuesCache == null) {
 			valuesCache = new int[updateHandler.getFieldCount()];
@@ -89,7 +105,7 @@ public class GenericContainer extends ContainerBase {
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
 		ItemStack originalStack = null;
-		Slot slot = (Slot) this.inventorySlots.get(index);
+		Slot slot = this.inventorySlots.get(index);
 
 		if (slot != null && slot.getHasStack()) {
 			ItemStack stack = slot.getStack();
@@ -102,6 +118,8 @@ public class GenericContainer extends ContainerBase {
 					return null;
 				}
 				slot.onSlotChange(stack, originalStack);
+			} else if (slotType == SlotType.DISPLAY) {
+				return null;
 			} else if (playerSlotsStart <= index && index < playerSlotsStart + 9 * 4) {
 				boolean success = false;
 				for (int i = 0; i < slotsTypes.size(); i++) {
@@ -117,9 +135,9 @@ public class GenericContainer extends ContainerBase {
 					return null;
 			}
 
-			if (stack.stackSize == 0) {
-				slot.putStack((ItemStack) null);
-			} else {
+			if (stack.stackSize == 0)
+				slot.putStack(null);
+			else {
 				slot.onSlotChanged();
 			}
 
@@ -134,7 +152,6 @@ public class GenericContainer extends ContainerBase {
 	}
 
 	public enum SlotType {
-		INPUT, OUTPUT, PLAYER
+		INPUT, OUTPUT, DISPLAY, PLAYER
 	}
-
 }
