@@ -52,8 +52,8 @@ public class DelegatedSmartModel implements IBakedModel {
 	}
 
 	@Override
-	public TextureAtlasSprite getTexture() {
-		return delegate.getTexture();
+	public TextureAtlasSprite getParticleTexture() {
+		return delegate.getParticleTexture();
 	}
 
 	@Override

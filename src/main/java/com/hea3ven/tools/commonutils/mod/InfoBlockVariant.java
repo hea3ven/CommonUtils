@@ -6,7 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.item.ItemBlock;
 
-public class InfoBlockVariant extends InfoBlock {
+class InfoBlockVariant extends InfoBlock {
 
 	private IProperty variantProp;
 	private String variantSuffix;
@@ -29,7 +29,7 @@ public class InfoBlockVariant extends InfoBlock {
 
 	public InfoBlockVariant(Block block, String domain, String name, IProperty variantProp,
 			String variantSuffix, Map<Object, Integer> variantMetas) {
-		super(block, domain, name);
+		super(block, domain, name, ItemBlock.class, null);
 		this.variantProp = variantProp;
 		this.variantSuffix = variantSuffix;
 		this.variantMetas = variantMetas;

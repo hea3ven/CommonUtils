@@ -3,7 +3,7 @@ package com.hea3ven.tools.commonutils.mod;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 
-public class InfoBlock {
+class InfoBlock {
 
 	private Block block;
 	private String domain;
@@ -20,13 +20,13 @@ public class InfoBlock {
 		this.itemArgs = itemArgs;
 	}
 
-	public InfoBlock(Block block, String domain, String name, Class<? extends ItemBlock> itemCls) {
-		this(block, domain, name, itemCls, null);
-	}
+//	public InfoBlock(Block block, String domain, String name, Class<? extends ItemBlock> itemCls) {
+//		this(block, domain, name, itemCls, null);
+//	}
 
-	public InfoBlock(Block block, String domain, String name) {
-		this(block, domain, name, ItemBlock.class);
-	}
+//	public InfoBlock(Block block, String domain, String name) {
+//		this(block, domain, name, ItemBlock.class);
+//	}
 
 	public Block getBlock() {
 		return block;

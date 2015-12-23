@@ -2,7 +2,7 @@ package com.hea3ven.tools.commonutils.mod;
 
 import net.minecraft.tileentity.TileEntity;
 
-public class InfoTileEntity {
+class InfoTileEntity {
 
 	private Class<? extends TileEntity> tileClass;
 	private String name;
