@@ -20,7 +20,10 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.ResourceLocation;
 
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.*;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,6 +33,18 @@ public class ModelBakerBase {
 	private static final Logger logger = LogManager.getLogger("BuildingBricks.RenderingManager");
 
 	private DefaultStateMapper stateMap = new DefaultStateMapper();
+
+	@SubscribeEvent
+	public void onTextureStichPreEvent(TextureStitchEvent.Pre event) {
+	}
+
+	@SubscribeEvent
+	public void onTextureStichPostEvent(TextureStitchEvent.Post event) {
+	}
+
+	@SubscribeEvent
+	public void onModelBakeEvent(ModelBakeEvent event) {
+	}
 
 	protected IModel getModel(ResourceLocation modelLoc) {
 		try {

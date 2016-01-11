@@ -20,7 +20,7 @@ group = 'com.hea3ven.tools.commonutils'
 archivesBaseName = 'h3nt-commonutils'
 
 minecraft {
-	version = "1.8.8-11.15.0.1601-1.8.8"
+	version = "1.8.8-11.15.0.1623-1.8.8"
 	mappings = "snapshot_20151212"
     runDir = "run"
 }

@@ -1,5 +1,7 @@
 package com.hea3ven.tools.commonutils.mod;
 
+import net.minecraft.item.crafting.IRecipe;
+
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -13,6 +15,7 @@ public abstract class ModInitializerCommon {
 	}
 
 	public void onInitEvent(ProxyModBase proxy) {
+		registerRecipes(proxy);
 	}
 
 	public void onPostInitEvent(ProxyModBase proxy) {
@@ -21,6 +24,7 @@ public abstract class ModInitializerCommon {
 	}
 
 	private void registerBlocks(ProxyModBase proxy) {
+		proxy.registerBlocks();
 		for (InfoBlock block : proxy.blocks) {
 			GameRegistry.registerBlock(block.getBlock(), block.getItemCls(), block.getName(),
 					(block.getItemArgs() != null) ? block.getItemArgs() : new Object[0]);
@@ -28,22 +32,28 @@ public abstract class ModInitializerCommon {
 	}
 
 	private void registerTileEntities(ProxyModBase proxy) {
+		proxy.registerTileEntities();
 		for (InfoTileEntity tile : proxy.tiles) {
 			GameRegistry.registerTileEntity(tile.getTileClass(), tile.getName());
 		}
 	}
 
 	private void registerItems(ProxyModBase proxy) {
+		proxy.registerItems();
 		for (InfoItem item : proxy.items) {
 			GameRegistry.registerItem(item.getItem(), item.getName());
 		}
 	}
 
-	private void registerGuiHandlers(ProxyModBase proxy) {
-		NetworkRegistry.INSTANCE.registerGuiHandler(proxy.getModId(), proxy.getGuiHandler());
-	}
-
 	private void registerRecipes(ProxyModBase proxy) {
 		proxy.registerRecipes();
+		for (IRecipe recipe : proxy.recipes) {
+			GameRegistry.addRecipe(recipe);
+		}
+	}
+
+	private void registerGuiHandlers(ProxyModBase proxy) {
+		proxy.registerGuis();
+		NetworkRegistry.INSTANCE.registerGuiHandler(proxy.getModId(), proxy.getGuiHandler());
 	}
 }
