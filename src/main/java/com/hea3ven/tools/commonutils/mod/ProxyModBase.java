@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -35,6 +37,7 @@ public class ProxyModBase {
 	List<InfoTileEntity> tiles = Lists.newArrayList();
 	List<InfoItem> items = Lists.newArrayList();
 	List<IRecipe> recipes = Lists.newArrayList();
+	Map<String, CreativeTabs> creativeTabs = Maps.newHashMap();
 
 	private GenericGuiHandler guiHandler = new GenericGuiHandler();
 	private IGuiHandler overrideGuiHandler;
@@ -101,6 +104,19 @@ public class ProxyModBase {
 
 	public void addItem(Item item, String name, String[] variants) {
 		items.add(new InfoItem(item, modId, name, variants));
+	}
+
+	public void addCreativeTab(String name, final Item icon) {
+		creativeTabs.put(name, new CreativeTabs(name) {
+			@Override
+			public Item getTabIconItem() {
+				return icon;
+			}
+		});
+	}
+
+	public CreativeTabs getCreativeTab(String name) {
+		return creativeTabs.get(name);
 	}
 
 	protected void registerRecipes() {
