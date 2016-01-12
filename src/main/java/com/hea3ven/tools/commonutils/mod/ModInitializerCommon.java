@@ -12,15 +12,16 @@ public abstract class ModInitializerCommon {
 		registerBlocks(proxy);
 		registerTileEntities(proxy);
 		registerItems(proxy);
+		registerCreativeTabs(proxy);
 	}
 
 	public void onInitEvent(ProxyModBase proxy) {
+		registerNetworkPackets(proxy);
 		registerRecipes(proxy);
+		registerGuiHandlers(proxy);
 	}
 
 	public void onPostInitEvent(ProxyModBase proxy) {
-		registerGuiHandlers(proxy);
-		registerRecipes(proxy);
 	}
 
 	private void registerBlocks(ProxyModBase proxy) {
@@ -43,6 +44,14 @@ public abstract class ModInitializerCommon {
 		for (InfoItem item : proxy.items) {
 			GameRegistry.registerItem(item.getItem(), item.getName());
 		}
+	}
+
+	private void registerCreativeTabs(ProxyModBase proxy) {
+		proxy.registerCreativeTabs();
+	}
+
+	private void registerNetworkPackets(ProxyModBase proxy) {
+		proxy.registerNetworkPackets();
 	}
 
 	private void registerRecipes(ProxyModBase proxy) {

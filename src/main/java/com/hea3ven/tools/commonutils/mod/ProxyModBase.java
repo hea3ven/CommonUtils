@@ -2,6 +2,7 @@ package com.hea3ven.tools.commonutils.mod;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -18,6 +19,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -42,6 +47,8 @@ public class ProxyModBase {
 	private GenericGuiHandler guiHandler = new GenericGuiHandler();
 	private IGuiHandler overrideGuiHandler;
 
+	private SimpleNetworkWrapper netChannel;
+
 	public ProxyModBase(String modId) {
 		this.modId = modId;
 		switch (FMLCommonHandler.instance().getSide()) {
@@ -52,6 +59,10 @@ public class ProxyModBase {
 				modInitializer = new ModInitializerServer();
 				break;
 		}
+	}
+
+	String getModId() {
+		return modId;
 	}
 
 	public void onPreInitEvent() {
@@ -106,11 +117,14 @@ public class ProxyModBase {
 		items.add(new InfoItem(item, modId, name, variants));
 	}
 
-	public void addCreativeTab(String name, final Item icon) {
+	protected void registerCreativeTabs() {
+	}
+
+	public void addCreativeTab(String name, final Supplier<Item> icon) {
 		creativeTabs.put(name, new CreativeTabs(name) {
 			@Override
 			public Item getTabIconItem() {
-				return icon;
+				return icon.get();
 			}
 		});
 	}
@@ -168,7 +182,18 @@ public class ProxyModBase {
 		return overrideGuiHandler != null ? overrideGuiHandler : guiHandler;
 	}
 
-	String getModId() {
-		return modId;
+	protected void registerNetworkPackets() {
+	}
+
+	public <REQ extends IMessage, REPLY extends IMessage> void addNetworkPacket(
+			Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Class<REQ> requestMessageType,
+			int discriminator, Side side) {
+		if (netChannel == null)
+			netChannel = NetworkRegistry.INSTANCE.newSimpleChannel(modId);
+		netChannel.registerMessage(messageHandler, requestMessageType, discriminator, side);
+	}
+
+	public SimpleNetworkWrapper getNetChannel() {
+		return netChannel;
 	}
 }
