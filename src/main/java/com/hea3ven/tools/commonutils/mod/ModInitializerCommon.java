@@ -1,13 +1,22 @@
 package com.hea3ven.tools.commonutils.mod;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import net.minecraft.item.crafting.IRecipe;
 
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import com.hea3ven.tools.commonutils.mod.config.ConfigManager;
+import com.hea3ven.tools.commonutils.mod.config.ConfigManagerBuilder;
+
 public abstract class ModInitializerCommon {
 
-	public void onPreInitEvent(ProxyModBase proxy) {
+	public void onPreInitEvent(ProxyModBase proxy, FMLPreInitializationEvent event) {
+		registerConfig(proxy, event);
 		proxy.registerEnchantments();
 		registerBlocks(proxy);
 		registerTileEntities(proxy);
@@ -22,6 +31,17 @@ public abstract class ModInitializerCommon {
 	}
 
 	public void onPostInitEvent(ProxyModBase proxy) {
+	}
+
+	private void registerConfig(ProxyModBase proxy, FMLPreInitializationEvent event) {
+		proxy.registerConfig();
+		ConfigManagerBuilder builder = proxy.cfgMgrBuilder;
+		if (builder == null)
+			return;
+		Path configDir = Paths.get(event.getModConfigurationDirectory().toString());
+		proxy.cfgMgr = builder.build(proxy.getModId(), configDir);
+		MinecraftForge.EVENT_BUS.register(proxy.cfgMgr);
+		proxy.cfgMgr.onConfigChanged(null);
 	}
 
 	private void registerBlocks(ProxyModBase proxy) {

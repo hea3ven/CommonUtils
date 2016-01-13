@@ -18,6 +18,9 @@ import net.minecraft.tileentity.TileEntity;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -31,6 +34,9 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import com.hea3ven.tools.commonutils.client.ModelBakerBase;
 import com.hea3ven.tools.commonutils.inventory.GenericGuiHandler;
 import com.hea3ven.tools.commonutils.inventory.ISimpleGuiHandler;
+import com.hea3ven.tools.commonutils.mod.config.ConfigManager;
+import com.hea3ven.tools.commonutils.mod.config.ConfigManagerBuilder;
+import com.hea3ven.tools.commonutils.mod.config.DirectoryConfigManagerBuilder;
 
 public class ProxyModBase {
 
@@ -44,9 +50,12 @@ public class ProxyModBase {
 	List<IRecipe> recipes = Lists.newArrayList();
 	Map<String, CreativeTabs> creativeTabs = Maps.newHashMap();
 
+	ConfigManager cfgMgr;
+
 	private GenericGuiHandler guiHandler = new GenericGuiHandler();
 	private IGuiHandler overrideGuiHandler;
 
+	ConfigManagerBuilder cfgMgrBuilder;
 	private SimpleNetworkWrapper netChannel;
 
 	public ProxyModBase(String modId) {
@@ -65,16 +74,28 @@ public class ProxyModBase {
 		return modId;
 	}
 
-	public void onPreInitEvent() {
-		modInitializer.onPreInitEvent(this);
+	public void onPreInitEvent(FMLPreInitializationEvent event) {
+		modInitializer.onPreInitEvent(this, event);
 	}
 
-	public void onInitEvent() {
+	public void onInitEvent(FMLInitializationEvent event) {
 		modInitializer.onInitEvent(this);
 	}
 
-	public void onPostInitEvent() {
+	public void onPostInitEvent(FMLPostInitializationEvent event) {
 		modInitializer.onPostInitEvent(this);
+	}
+
+	public void registerConfig() {
+
+	}
+
+	public void addConfigManager(ConfigManagerBuilder cfgMgrBuilder) {
+		this.cfgMgrBuilder = cfgMgrBuilder;
+	}
+
+	ConfigManager getConfigManager() {
+		return cfgMgr;
 	}
 
 	protected void registerBlocks() {

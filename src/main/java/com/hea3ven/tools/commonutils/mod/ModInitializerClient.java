@@ -11,14 +11,15 @@ import net.minecraft.item.Item;
 import net.minecraft.util.IStringSerializable;
 
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import com.hea3ven.tools.commonutils.client.renderer.SimpleItemMeshDefinition;
 
 public class ModInitializerClient extends ModInitializerCommon {
 
 	@Override
-	public void onPreInitEvent(ProxyModBase proxy) {
-		super.onPreInitEvent(proxy);
+	public void onPreInitEvent(ProxyModBase proxy, FMLPreInitializationEvent event) {
+		super.onPreInitEvent(proxy, event);
 		registerVariantBlocks(proxy);
 		registerVariantItems(proxy);
 		registerBlocksItemModels(proxy);
