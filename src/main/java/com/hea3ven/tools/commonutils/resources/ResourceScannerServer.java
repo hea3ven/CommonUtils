@@ -84,13 +84,11 @@ public class ResourceScannerServer extends ResourceScanner {
 	private Set<String> scanZip(Path zip, String modid, String name) {
 		Set<String> resources = Sets.newHashSet();
 		try (ZipFile jarZip = new ZipFile(zip.toFile())) {
-			logger.info(jarZip.getName());
 			for (Enumeration<? extends ZipEntry> e = jarZip.entries(); e.hasMoreElements(); ) {
 				ZipEntry entry = e.nextElement();
 				if (entry.isDirectory())
 					continue;
 				Path entryPath = Paths.get(entry.getName());
-				logger.info(entryPath.toString());
 				if (entryPath.getNameCount() < 5)
 					continue;
 				if (!entryPath.getName(0).getFileName().toString().equals("assets"))

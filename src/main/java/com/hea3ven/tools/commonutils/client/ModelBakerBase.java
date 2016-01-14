@@ -47,9 +47,21 @@ public class ModelBakerBase {
 	}
 
 	protected IModel getModel(ResourceLocation modelLoc) {
+		return getModel(modelLoc, null);
+	}
+
+	protected IModel getModel(ResourceLocation modelLoc, ResourceLocation fallback) {
 		try {
 			return ModelLoaderRegistry.getModel(modelLoc);
 		} catch (IOException e) {
+			if (fallback != null) {
+				try {
+					return ModelLoaderRegistry.getModel(fallback);
+				} catch (IOException e2) {
+					logger.warn("Could not find model {} or fallback {}", modelLoc, fallback);
+					return ModelLoaderRegistry.getMissingModel();
+				}
+			}
 			logger.warn("Could not find model {}", modelLoc);
 			return ModelLoaderRegistry.getMissingModel();
 		}

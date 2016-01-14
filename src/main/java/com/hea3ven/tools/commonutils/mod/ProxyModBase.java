@@ -2,6 +2,8 @@ package com.hea3ven.tools.commonutils.mod;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
@@ -16,11 +18,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -32,11 +36,11 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import com.hea3ven.tools.commonutils.client.ModelBakerBase;
+import com.hea3ven.tools.commonutils.client.settings.KeyBindingManager;
 import com.hea3ven.tools.commonutils.inventory.GenericGuiHandler;
 import com.hea3ven.tools.commonutils.inventory.ISimpleGuiHandler;
 import com.hea3ven.tools.commonutils.mod.config.ConfigManager;
 import com.hea3ven.tools.commonutils.mod.config.ConfigManagerBuilder;
-import com.hea3ven.tools.commonutils.mod.config.DirectoryConfigManagerBuilder;
 
 public class ProxyModBase {
 
@@ -57,6 +61,7 @@ public class ProxyModBase {
 
 	ConfigManagerBuilder cfgMgrBuilder;
 	private SimpleNetworkWrapper netChannel;
+	KeyBindingManager keyBindingManager;
 
 	public ProxyModBase(String modId) {
 		this.modId = modId;
@@ -216,5 +221,31 @@ public class ProxyModBase {
 
 	public SimpleNetworkWrapper getNetChannel() {
 		return netChannel;
+	}
+
+	protected void registerKeyBindings() {
+	}
+
+	public void addKeyBinding(String description, int keyCode, String category,
+			Consumer<KeyInputEvent> callback) {
+		if (keyBindingManager == null) {
+			keyBindingManager = new KeyBindingManager();
+		}
+		keyBindingManager.addKeyBinding(description, keyCode, category, callback);
+	}
+
+	public void addItemKeyBinding(Item item, String description, int keyCode, String category,
+			Consumer<KeyInputEvent> callback) {
+		if (keyBindingManager == null) {
+			keyBindingManager = new KeyBindingManager();
+		}
+		keyBindingManager.addItemKeyBinding(item, description, keyCode, category, callback);
+	}
+
+	public void addItemScrollWheelBinding(Item item, Function<MouseEvent, Boolean> callback) {
+		if (keyBindingManager == null) {
+			keyBindingManager = new KeyBindingManager();
+		}
+		keyBindingManager.addScrollWheelBinding(item, callback);
 	}
 }

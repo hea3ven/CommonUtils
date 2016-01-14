@@ -7,10 +7,13 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraft.util.IStringSerializable;
 
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import com.hea3ven.tools.commonutils.client.renderer.SimpleItemMeshDefinition;
@@ -28,6 +31,7 @@ public class ModInitializerClient extends ModInitializerCommon {
 	@Override
 	public void onInitEvent(ProxyModBase proxy) {
 		super.onInitEvent(proxy);
+		registerKeyBindings(proxy);
 	}
 
 	@Override
@@ -91,6 +95,16 @@ public class ModInitializerClient extends ModInitializerCommon {
 					ModelLoader.setCustomModelResourceLocation(item.getItem(), i++,
 							new ModelResourceLocation(item.getDomain() + ":" + variant, "inventory"));
 				}
+			}
+		}
+	}
+
+	private void registerKeyBindings(ProxyModBase proxy) {
+		proxy.registerKeyBindings();
+		if (proxy.keyBindingManager != null) {
+			MinecraftForge.EVENT_BUS.register(proxy.keyBindingManager);
+			for (KeyBinding keyBinding : proxy.keyBindingManager.getKeyBindings()) {
+				ClientRegistry.registerKeyBinding(keyBinding);
 			}
 		}
 	}
