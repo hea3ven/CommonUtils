@@ -4,11 +4,9 @@ import java.lang.reflect.Constructor;
 
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 
 public abstract class ContainerBase extends Container {
 
@@ -43,33 +41,5 @@ public abstract class ContainerBase extends Container {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer playerIn) {
-		if (slotId >= 0 && mode == 0) {
-			Slot slot = this.inventorySlots.get(slotId);
-			if (slot instanceof SlotGhost) {
-				ItemStack itemstack4 = playerIn.inventory.getItemStack();
-				if (itemstack4 != null && slot.isItemValid(itemstack4)) {
-					int l1 = clickedButton == 0 ? itemstack4.stackSize : 1;
-
-					if (l1 > slot.getItemStackLimit(itemstack4)) {
-						l1 = slot.getItemStackLimit(itemstack4);
-					}
-
-					if (itemstack4.stackSize >= l1) {
-						slot.putStack(itemstack4.splitStack(l1));
-					}
-
-					if (itemstack4.stackSize == 0) {
-						playerIn.inventory.setItemStack(null);
-					}
-				}
-				return null;
-			}
-		}
-
-		return super.slotClick(slotId, clickedButton, mode, playerIn);
 	}
 }

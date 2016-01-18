@@ -1,6 +1,5 @@
 package com.hea3ven.tools.commonutils.mod.config;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Throwables;
 
-import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;

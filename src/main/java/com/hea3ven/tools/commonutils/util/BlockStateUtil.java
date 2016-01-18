@@ -1,7 +1,6 @@
 package com.hea3ven.tools.commonutils.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

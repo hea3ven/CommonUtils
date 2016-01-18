@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import com.hea3ven.tools.commonutils.mod.config.ConfigManager;
 import com.hea3ven.tools.commonutils.mod.config.ConfigManagerBuilder;
 
 public abstract class ModInitializerCommon {

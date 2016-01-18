@@ -2,6 +2,7 @@ package com.hea3ven.tools.commonutils.client.model;
 
 import java.util.List;
 
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
@@ -27,12 +28,12 @@ public class DelegatedSmartModel implements IBakedModel {
 	}
 
 	@Override
-	public List getFaceQuads(EnumFacing side) {
+	public List<BakedQuad> getFaceQuads(EnumFacing side) {
 		return delegate.getFaceQuads(side);
 	}
 
 	@Override
-	public List getGeneralQuads() {
+	public List<BakedQuad> getGeneralQuads() {
 		return delegate.getGeneralQuads();
 	}
 
@@ -60,5 +61,4 @@ public class DelegatedSmartModel implements IBakedModel {
 	public ItemCameraTransforms getItemCameraTransforms() {
 		return delegate.getItemCameraTransforms();
 	}
-
 }

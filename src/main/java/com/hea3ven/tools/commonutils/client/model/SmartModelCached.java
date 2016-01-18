@@ -1,10 +1,8 @@
 package com.hea3ven.tools.commonutils.client.model;
 
-import java.util.Collection;
 import java.util.HashMap;
 
 import com.google.common.base.Optional;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import net.minecraft.block.state.IBlockState;
@@ -43,13 +41,10 @@ public class SmartModelCached extends DelegatedSmartModel implements ISmartBlock
 
 	private int calculateHash(IExtendedBlockState state) {
 		HashCodeBuilder hash = new HashCodeBuilder();
-		for (Comparable value : (Collection<Comparable>) state.getProperties().values()) {
+		for (Comparable value : state.getProperties().values())
 			hash.append(value);
-		}
-		for (Optional<?> value : state.getUnlistedProperties().values()) {
+		for (Optional<?> value : state.getUnlistedProperties().values())
 			hash.append(value);
-		}
 		return hash.build();
 	}
-
 }

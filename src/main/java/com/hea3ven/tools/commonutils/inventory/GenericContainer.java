@@ -19,6 +19,14 @@ public class GenericContainer extends ContainerBase {
 	private List<SlotType> slotsTypes = Lists.newArrayList();
 	private int playerSlotsStart = 0;
 
+	public GenericContainer addInputOutputSlots(IInventory inv, int slotOff, int xOff, int yOff, int xSize,
+			int ySize) {
+		for (int i = 0; i < xSize * ySize; i++)
+			slotsTypes.add(SlotType.INPUT_OUTPUT);
+		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotInput.class, inv);
+		return this;
+	}
+
 	public GenericContainer addInputSlots(IInventory inv, int slotOff, int xOff, int yOff, int xSize,
 			int ySize) {
 		for (int i = 0; i < xSize * ySize; i++)
@@ -113,21 +121,37 @@ public class GenericContainer extends ContainerBase {
 
 			SlotType slotType = slotsTypes.get(index);
 
-			if (slotType == SlotType.INPUT || slotType == SlotType.OUTPUT) {
+			if (slotType == SlotType.INPUT || slotType == SlotType.OUTPUT ||
+					slotType == SlotType.INPUT_OUTPUT) {
 				if (!this.mergeItemStack(stack, playerSlotsStart, playerSlotsStart + 9 * 4, true)) {
 					return null;
 				}
 				slot.onSlotChange(stack, originalStack);
 			} else if (slotType == SlotType.DISPLAY) {
+				if (slot instanceof SlotCustom) {
+					stack = ((SlotCustom) slot).provideItemStack();
+					if (!this.mergeItemStack(stack, playerSlotsStart, playerSlotsStart + 9 * 4, true)) {
+						return null;
+					}
+					slot.onSlotChange(stack, originalStack);
+				}
 				return null;
 			} else if (playerSlotsStart <= index && index < playerSlotsStart + 9 * 4) {
 				boolean success = false;
 				for (int i = 0; i < slotsTypes.size(); i++) {
 					SlotType dstSlotType = slotsTypes.get(i);
-					if (dstSlotType == SlotType.INPUT) {
+					if (dstSlotType == SlotType.INPUT || dstSlotType == SlotType.INPUT_OUTPUT) {
 						if (this.mergeItemStack(stack, i, i + 1, false)) {
 							success = true;
 							break;
+						}
+					} else if (dstSlotType == SlotType.DISPLAY) {
+						Slot dstSlot = getSlot(i);
+						if (dstSlot instanceof SlotCustom) {
+							if (((SlotCustom) dstSlot).receiveItemStack(stack)) {
+								success = true;
+								break;
+							}
 						}
 					}
 				}
@@ -152,6 +176,6 @@ public class GenericContainer extends ContainerBase {
 	}
 
 	public enum SlotType {
-		INPUT, OUTPUT, DISPLAY, PLAYER
+		INPUT, OUTPUT, DISPLAY, INPUT_OUTPUT, PLAYER
 	}
 }

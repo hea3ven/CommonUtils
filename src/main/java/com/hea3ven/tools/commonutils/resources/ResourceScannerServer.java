@@ -21,8 +21,6 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.launchwrapper.Launch;
 
-import net.minecraftforge.fml.common.Loader;
-
 public class ResourceScannerServer extends ResourceScanner {
 
 	@Override
@@ -50,8 +48,8 @@ public class ResourceScannerServer extends ResourceScanner {
 		if (!Files.exists(assetsDir))
 			return Sets.newHashSet();
 
-		try {
-			DirectoryStream<Path> modDirs = Files.newDirectoryStream(assetsDir);
+		try (
+				DirectoryStream<Path> modDirs = Files.newDirectoryStream(assetsDir)) {
 			Set<String> resources = Sets.newHashSet();
 			for (Path modDir : modDirs) {
 				String modName = modDir.getFileName().toString();
@@ -61,17 +59,19 @@ public class ResourceScannerServer extends ResourceScanner {
 				if (!Files.exists(targetDir))
 					continue;
 
-				DirectoryStream<Path> modResDirs = Files.newDirectoryStream(targetDir);
-				for (Path modResDir : modResDirs) {
-					if (!Files.isDirectory(modResDir))
-						continue;
-					if (!isModLoaded(modResDir.getFileName().toString()))
-						continue;
-					DirectoryStream<Path> entries = Files.newDirectoryStream(modResDir);
-					for (Path entry : entries) {
-						if (!entry.getFileName().toString().endsWith(".json"))
+				try (DirectoryStream<Path> modResDirs = Files.newDirectoryStream(targetDir)) {
+					for (Path modResDir : modResDirs) {
+						if (!Files.isDirectory(modResDir))
 							continue;
-						resources.add("/" + dir.relativize(entry).toString().replace('\\', '/'));
+						if (!isModLoaded(modResDir.getFileName().toString()))
+							continue;
+						try (DirectoryStream<Path> entries = Files.newDirectoryStream(modResDir)) {
+							for (Path entry : entries) {
+								if (!entry.getFileName().toString().endsWith(".json"))
+									continue;
+								resources.add("/" + dir.relativize(entry).toString().replace('\\', '/'));
+							}
+						}
 					}
 				}
 			}

@@ -64,8 +64,8 @@ public class ResourceScannerClient extends ResourceScanner {
 		Set<ResourceLocation> materials = new HashSet<>();
 		File rootDir = ReflectionHelper.getPrivateValue(AbstractResourcePack.class, resPack, "field_110597_b",
 				"resourcePackFile");
-		try {
-			DirectoryStream<Path> modDirs = Files.newDirectoryStream(Paths.get(rootDir.toString(), "assets"));
+		Path assetsDir = Paths.get(rootDir.toString(), "assets");
+		try (DirectoryStream<Path> modDirs = Files.newDirectoryStream(assetsDir)) {
 			for (Path modDir : modDirs) {
 				String modName = modDir.getFileName().toString();
 				if (!modName.equals(modid))
@@ -74,17 +74,20 @@ public class ResourceScannerClient extends ResourceScanner {
 				if (!Files.exists(targetDir))
 					continue;
 
-				DirectoryStream<Path> modResDirs = Files.newDirectoryStream(targetDir);
-				for (Path modResDir : modResDirs) {
-					if (!Files.isDirectory(modResDir))
-						continue;
-					if (!isModLoaded(modResDir.getFileName().toString()))
-						continue;
-					DirectoryStream<Path> entries = Files.newDirectoryStream(modResDir);
-					for (Path entry : entries) {
-						if (!entry.getFileName().toString().endsWith(".json"))
+				try (DirectoryStream<Path> modResDirs = Files.newDirectoryStream(targetDir)) {
+					for (Path modResDir : modResDirs) {
+						if (!Files.isDirectory(modResDir))
 							continue;
-						materials.add(new ResourceLocation(modName, modDir.relativize(entry).toString().replace('\\', '/')));
+						if (!isModLoaded(modResDir.getFileName().toString()))
+							continue;
+						try (DirectoryStream<Path> entries = Files.newDirectoryStream(modResDir)) {
+							for (Path entry : entries) {
+								if (!entry.getFileName().toString().endsWith(".json"))
+									continue;
+								materials.add(new ResourceLocation(modName,
+										modDir.relativize(entry).toString().replace('\\', '/')));
+							}
+						}
 					}
 				}
 			}
@@ -114,8 +117,8 @@ public class ResourceScannerClient extends ResourceScanner {
 			if (!entryPath.getFileName().toString().endsWith(".json"))
 				continue;
 
-			materials.add(
-					new ResourceLocation(modid, Paths.get("assets", modid).relativize(entryPath).toString().replace('\\', '/')));
+			materials.add(new ResourceLocation(modid,
+					Paths.get("assets", modid).relativize(entryPath).toString().replace('\\', '/')));
 		}
 		return materials;
 	}

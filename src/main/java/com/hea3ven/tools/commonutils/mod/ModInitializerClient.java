@@ -1,7 +1,10 @@
 package com.hea3ven.tools.commonutils.mod;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.renderer.block.statemap.StateMap;
@@ -10,6 +13,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -50,8 +54,14 @@ public class ModInitializerClient extends ModInitializerCommon {
 				String name = block.getDomain() + ":" + value.getName() + blockVar.getVariantSuffix();
 				variants.add(name);
 			}
-			ModelBakery.addVariantName(Item.getItemFromBlock(block.getBlock()),
-					variants.toArray(new String[variants.size()]));
+			ModelBakery.registerItemVariants(Item.getItemFromBlock(block.getBlock()),
+					Iterables.toArray(Iterables.transform(variants, new Function<String, ResourceLocation>() {
+						@Nullable
+						@Override
+						public ResourceLocation apply(@Nullable String input) {
+							return new ResourceLocation(input);
+						}
+					}), ResourceLocation.class));
 
 			ModelLoader.setCustomStateMapper(block.getBlock(),
 					(new StateMap.Builder()).withName(blockVar.getVariantProp())
