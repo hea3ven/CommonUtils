@@ -1,6 +1,7 @@
 package com.hea3ven.tools.commonutils.inventory;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 
@@ -10,6 +11,9 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class GenericContainer extends ContainerBase {
 
@@ -27,6 +31,14 @@ public class GenericContainer extends ContainerBase {
 		return this;
 	}
 
+	public GenericContainer addInputOutputSlots(IItemHandler inv, int slotOff, int xOff, int yOff, int xSize,
+			int ySize) {
+		for (int i = 0; i < xSize * ySize; i++)
+			slotsTypes.add(SlotType.INPUT_OUTPUT);
+		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotItemHandler.class, inv);
+		return this;
+	}
+
 	public GenericContainer addInputSlots(IInventory inv, int slotOff, int xOff, int yOff, int xSize,
 			int ySize) {
 		for (int i = 0; i < xSize * ySize; i++)
@@ -35,11 +47,27 @@ public class GenericContainer extends ContainerBase {
 		return this;
 	}
 
+	public GenericContainer addInputSlots(IItemHandler inv, int slotOff, int xOff, int yOff, int xSize,
+			int ySize) {
+		for (int i = 0; i < xSize * ySize; i++)
+			slotsTypes.add(SlotType.INPUT);
+		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotItemHandler.class, inv);
+		return this;
+	}
+
 	public GenericContainer addOutputSlots(IInventory inv, int slotOff, int xOff, int yOff, int xSize,
 			int ySize) {
 		for (int i = 0; i < xSize * ySize; i++)
 			slotsTypes.add(SlotType.OUTPUT);
 		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotOutput.class, inv);
+		return this;
+	}
+
+	public GenericContainer addOutputSlots(IItemHandler inv, int slotOff, int xOff, int yOff, int xSize,
+			int ySize) {
+		for (int i = 0; i < xSize * ySize; i++)
+			slotsTypes.add(SlotType.OUTPUT);
+		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotItemHandlerOutput.class, inv);
 		return this;
 	}
 
@@ -57,11 +85,23 @@ public class GenericContainer extends ContainerBase {
 	}
 
 	public GenericContainer addPlayerSlots(InventoryPlayer playerInv) {
+		return addPlayerSlots(playerInv, null);
+	}
+
+	public GenericContainer addPlayerSlots(final InventoryPlayer playerInv, final Set<Integer> lockedSlots) {
 		playerSlotsStart = slotsTypes.size();
 		for (int i = 0; i < 9 * 4; i++)
 			slotsTypes.add(SlotType.PLAYER);
 		addInventoryGrid(playerInv, 9, 8, 84, 9, 3);
-		addInventoryGrid(playerInv, 0, 8, 142, 9, 1);
+		addInventoryGrid(0, 8, 142, 9, 1, new SlotFactory() {
+			@Override
+			public Slot create(int slot, int x, int y) {
+				if (lockedSlots.contains(slot))
+					return new SlotLocked(playerInv, slot, x, y);
+				else
+					return new Slot(playerInv, slot, x, y);
+			}
+		});
 		return this;
 	}
 

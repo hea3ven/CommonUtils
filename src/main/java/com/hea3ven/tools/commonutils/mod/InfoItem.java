@@ -13,6 +13,7 @@ class InfoItem {
 		this(item, domain, name);
 		this.variants = variants;
 	}
+
 	public InfoItem(Item item, String domain, String name) {
 		this.item = item;
 		this.domain = domain;
