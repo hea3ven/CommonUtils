@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -18,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -91,7 +93,7 @@ public class ProxyModBase {
 		modInitializer.onPostInitEvent(this);
 	}
 
-	public void registerConfig() {
+	protected void registerConfig() {
 
 	}
 
@@ -197,7 +199,7 @@ public class ProxyModBase {
 	protected void registerEnchantments() {
 	}
 
-	public void registerGuis() {
+	protected void registerGuis() {
 	}
 
 	public void setGuiHandler(IGuiHandler handler) {
@@ -247,5 +249,12 @@ public class ProxyModBase {
 			keyBindingManager = new KeyBindingManager();
 		}
 		keyBindingManager.addScrollWheelBinding(item, callback);
+	}
+
+	protected void registerCommands() {
+	}
+
+	public void addCommand(ICommand cmd) {
+		ClientCommandHandler.instance.registerCommand(cmd);
 	}
 }

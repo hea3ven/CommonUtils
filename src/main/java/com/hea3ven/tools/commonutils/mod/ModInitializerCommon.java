@@ -27,6 +27,7 @@ public abstract class ModInitializerCommon {
 		registerNetworkPackets(proxy);
 		registerRecipes(proxy);
 		registerGuiHandlers(proxy);
+		registerCommands(proxy);
 	}
 
 	public void onPostInitEvent(ProxyModBase proxy) {
@@ -83,5 +84,9 @@ public abstract class ModInitializerCommon {
 	private void registerGuiHandlers(ProxyModBase proxy) {
 		proxy.registerGuis();
 		NetworkRegistry.INSTANCE.registerGuiHandler(proxy.getModId(), proxy.getGuiHandler());
+	}
+
+	private void registerCommands(ProxyModBase proxy) {
+		proxy.registerCommands();
 	}
 }
