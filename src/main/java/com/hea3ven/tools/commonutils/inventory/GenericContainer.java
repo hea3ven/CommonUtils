@@ -13,7 +13,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 public class GenericContainer extends ContainerBase {
 
@@ -35,7 +34,7 @@ public class GenericContainer extends ContainerBase {
 			int ySize) {
 		for (int i = 0; i < xSize * ySize; i++)
 			slotsTypes.add(SlotType.INPUT_OUTPUT);
-		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotItemHandler.class, inv);
+		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotItemHandlerBase.class, inv);
 		return this;
 	}
 
@@ -51,7 +50,7 @@ public class GenericContainer extends ContainerBase {
 			int ySize) {
 		for (int i = 0; i < xSize * ySize; i++)
 			slotsTypes.add(SlotType.INPUT);
-		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotItemHandler.class, inv);
+		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotItemHandlerBase.class, inv);
 		return this;
 	}
 
@@ -96,7 +95,7 @@ public class GenericContainer extends ContainerBase {
 		addInventoryGrid(0, 8, 142, 9, 1, new SlotFactory() {
 			@Override
 			public Slot create(int slot, int x, int y) {
-				if (lockedSlots.contains(slot))
+				if (lockedSlots != null && lockedSlots.contains(slot))
 					return new SlotLocked(playerInv, slot, x, y);
 				else
 					return new Slot(playerInv, slot, x, y);

@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotItemHandlerOutput extends SlotItemHandler {
+public class SlotItemHandlerOutput extends SlotItemHandlerBase {
 
 	public SlotItemHandlerOutput(IItemHandler inv, int index, int xPosition, int yPosition) {
 		super(inv, index, xPosition, yPosition);
