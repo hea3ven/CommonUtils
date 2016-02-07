@@ -8,16 +8,19 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.zip.ZipEntry;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipFile;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.*;
+import net.minecraft.client.resources.data.IMetadataSection;
+import net.minecraft.client.resources.data.IMetadataSerializer;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -27,16 +30,51 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ResourceScannerClient extends ResourceScanner {
 	@Override
-	public Iterable<InputStream> scan(String modid, String name) {
-		IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
+	public InputStream getResource(ResourceLocation resLoc) throws IOException {
+		return Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream();
+	}
 
+	@Override
+	public void addModDirectory(Path dir) {
+		List<IResourcePack> resPacks =
+				ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "field_110449_ao",
+						"defaultResourcePacks");
+		resPacks.add(new FolderResourcePack(dir.toFile()) {
+			@Override
+			public <T extends IMetadataSection> T getPackMetadata(IMetadataSerializer serializer,
+					String section) throws IOException {
+				return null;
+			}
+		});
+		try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(dir)) {
+			for (Path subPath : dirStream) {
+				if (Files.isRegularFile(subPath)) {
+					if (subPath.toString().endsWith(".zip")) {
+						resPacks.add(new FileResourcePack(subPath.toFile()) {
+							@Override
+							public <T extends IMetadataSection> T getPackMetadata(
+									IMetadataSerializer serializer, String section) throws IOException {
+								return null;
+							}
+						});
+					}
+				}
+			}
+		} catch (IOException e) {
+			Throwables.propagate(e);
+		}
+	}
+
+	@Override
+	public Iterable<ResourceLocation> scan(String modid, String name) {
 		Set<ResourceLocation> res = new HashSet<>();
+		IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
 		for (IResourceManager mgr : getDomainResourceManagers(resourceManager).values()) {
 			for (IResourcePack resPack : getResourcePackages(mgr)) {
 				res.addAll(getMaterials(resPack, modid, name));
 			}
 		}
-		return new ResourceLocationIterable(res);
+		return res;
 	}
 
 	private static List<IResourcePack> getResourcePackages(IResourceManager mgr) {
@@ -52,75 +90,15 @@ public class ResourceScannerClient extends ResourceScanner {
 
 	private static Set<ResourceLocation> getMaterials(IResourcePack resPack, String modid, String name) {
 		if (resPack instanceof FolderResourcePack) {
-			return getResourcesFromDir((FolderResourcePack) resPack, modid, name);
+			File rootDir =
+					ReflectionHelper.getPrivateValue(AbstractResourcePack.class, (FolderResourcePack) resPack,
+							"field_110597_b", "resourcePackFile");
+			return getResourcesFromDir(Paths.get(rootDir.toString()), modid, name);
 		} else if (resPack instanceof FileResourcePack) {
-			return getResourcesFromZip((FileResourcePack) resPack, modid, name);
+			ZipFile packFile = getZipFromResPack((FileResourcePack) resPack);
+			return getResourcesFromZip(packFile, modid, name);
 		} else
 			return Sets.newHashSet();
-	}
-
-	private static Set<ResourceLocation> getResourcesFromDir(FolderResourcePack resPack, String modid,
-			String name) {
-		Set<ResourceLocation> materials = new HashSet<>();
-		File rootDir = ReflectionHelper.getPrivateValue(AbstractResourcePack.class, resPack, "field_110597_b",
-				"resourcePackFile");
-		Path assetsDir = Paths.get(rootDir.toString(), "assets");
-		try (DirectoryStream<Path> modDirs = Files.newDirectoryStream(assetsDir)) {
-			for (Path modDir : modDirs) {
-				String modName = modDir.getFileName().toString();
-				if (!modName.equals(modid))
-					continue;
-				Path targetDir = modDir.resolve(name);
-				if (!Files.exists(targetDir))
-					continue;
-
-				try (DirectoryStream<Path> modResDirs = Files.newDirectoryStream(targetDir)) {
-					for (Path modResDir : modResDirs) {
-						if (!Files.isDirectory(modResDir))
-							continue;
-						if (!isModLoaded(modResDir.getFileName().toString()))
-							continue;
-						try (DirectoryStream<Path> entries = Files.newDirectoryStream(modResDir)) {
-							for (Path entry : entries) {
-								if (!entry.getFileName().toString().endsWith(".json"))
-									continue;
-								materials.add(new ResourceLocation(modName,
-										modDir.relativize(entry).toString().replace('\\', '/')));
-							}
-						}
-					}
-				}
-			}
-			return materials;
-		} catch (IOException e) {
-			return materials;
-		}
-	}
-
-	private static Set<ResourceLocation> getResourcesFromZip(FileResourcePack resPack, String modid,
-			String name) {
-		Set<ResourceLocation> materials = new HashSet<>();
-		ZipFile packFile = getZipFromResPack(resPack);
-		for (Enumeration<? extends ZipEntry> entries = packFile.entries(); entries.hasMoreElements(); ) {
-			ZipEntry entry = entries.nextElement();
-			Path entryPath = Paths.get(entry.getName());
-			if (entryPath.getNameCount() < 5)
-				continue;
-			if (!entryPath.getName(0).getFileName().toString().equals("assets"))
-				continue;
-			if (!entryPath.getName(1).getFileName().toString().equals(modid))
-				continue;
-			if (!entryPath.getName(2).getFileName().toString().equals(name))
-				continue;
-			if (!isModLoaded(entryPath.getName(3).getFileName().toString()))
-				continue;
-			if (!entryPath.getFileName().toString().endsWith(".json"))
-				continue;
-
-			materials.add(new ResourceLocation(modid,
-					Paths.get("assets", modid).relativize(entryPath).toString().replace('\\', '/')));
-		}
-		return materials;
 	}
 
 	private static ZipFile getZipFromResPack(FileResourcePack resPack) {
@@ -131,39 +109,6 @@ public class ResourceScannerClient extends ResourceScanner {
 		} catch (Exception e) {
 			Throwables.propagate(e);
 			return null;
-		}
-	}
-
-	private class ResourceLocationIterable implements Iterable<InputStream> {
-		private final Set<ResourceLocation> resources;
-
-		public ResourceLocationIterable(Set<ResourceLocation> resources) {
-			this.resources = resources;
-		}
-
-		@Override
-		public Iterator<InputStream> iterator() {
-
-			return new Iterator<InputStream>() {
-				private List<ResourceLocation> resources =
-						Lists.newArrayList(ResourceLocationIterable.this.resources);
-
-				@Override
-				public boolean hasNext() {
-					return resources.size() > 0;
-				}
-
-				@Override
-				public InputStream next() {
-					IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
-					try {
-						return resourceManager.getResource(resources.remove(0)).getInputStream();
-					} catch (IOException e) {
-						Throwables.propagate(e);
-						return null;
-					}
-				}
-			};
 		}
 	}
 }
