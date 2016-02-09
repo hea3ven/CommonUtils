@@ -1,0 +1,9 @@
+1.0.3:
+	* Add support for IItemHandler in the Container classes
+	* Add commands handling
+	* Add the ability to add mod directories to the ResourceScanner
+	* Add public property on GenericContainer that specify the first slot of the player inventory
+	* Fix crash when lockedSlots in the container was null
+
+1.0.2:
+	* Initial release.
