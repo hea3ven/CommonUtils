@@ -99,7 +99,7 @@ public abstract class ResourceScanner {
 				continue;
 
 			resources.add(new ResourceLocation(entryPath.getName(1).getFileName().toString(),
-					entryPath.relativize(entryPath.getName(1)).toString().replace('\\', '/')));
+					entryPath.subpath(2, entryPath.getNameCount()).toString().replace('\\', '/')));
 		}
 		return resources;
 	}
