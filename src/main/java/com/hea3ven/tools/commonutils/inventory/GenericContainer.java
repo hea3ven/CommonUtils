@@ -20,7 +20,7 @@ public class GenericContainer extends ContainerBase {
 	private int[] valuesCache;
 
 	private List<SlotType> slotsTypes = Lists.newArrayList();
-	private int playerSlotsStart = 0;
+	private int playerSlotsStart = -1;
 
 	public GenericContainer addInputOutputSlots(IInventory inv, int slotOff, int xOff, int yOff, int xSize,
 			int ySize) {
@@ -212,6 +212,10 @@ public class GenericContainer extends ContainerBase {
 		}
 
 		return originalStack;
+	}
+
+	public int getPlayerSlotsStart() {
+		return playerSlotsStart;
 	}
 
 	public enum SlotType {
