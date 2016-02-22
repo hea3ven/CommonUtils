@@ -40,13 +40,13 @@ public class ResourceScannerServer extends ResourceScanner {
 	}
 
 	@Override
-	public Iterable<ResourceLocation> scan(String modid, String name) {
+	public Iterable<ResourceLocation> scan(String name) {
 		Set<ResourceLocation> resources = Sets.newHashSet();
 		for (Path dir : modDirectories) {
-			resources.addAll(getResourcesFromDir(dir, modid, name));
+			resources.addAll(getResourcesFromDir(dir, name));
 		}
 		for (Path resPack : modResourcePacks) {
-			resources.addAll(scanZip(resPack, modid, name));
+			resources.addAll(scanZip(resPack, name));
 		}
 		for (final URL element : Launch.classLoader.getSources()) {
 			if (!element.getProtocol().equals("file"))
@@ -54,9 +54,9 @@ public class ResourceScannerServer extends ResourceScanner {
 			try {
 				Path elemPath = Paths.get(element.toURI());
 				if (Files.isDirectory(elemPath)) {
-					resources.addAll(getResourcesFromDir(elemPath, modid, name));
+					resources.addAll(getResourcesFromDir(elemPath, name));
 				} else {
-					resources.addAll(scanZip(elemPath, modid, name));
+					resources.addAll(scanZip(elemPath, name));
 				}
 			} catch (URISyntaxException e) {
 				logger.debug("could not scan an element of the classpath");
@@ -76,8 +76,8 @@ public class ResourceScannerServer extends ResourceScanner {
 		}
 		for (Path resPack : modResourcePacks) {
 			try (ZipFile zip = new ZipFile(resPack.toFile())) {
-				ZipEntry entry = zip.getEntry(String.format("assets/%s/%s", resLoc.getResourceDomain(),
-						resLoc.getResourcePath()));
+				ZipEntry entry = zip.getEntry(
+						String.format("assets/%s/%s", resLoc.getResourceDomain(), resLoc.getResourcePath()));
 				if (entry != null) {
 					ByteArrayOutputStream data = new ByteArrayOutputStream();
 					try (InputStream entryStream = zip.getInputStream(entry)) {
@@ -94,13 +94,12 @@ public class ResourceScannerServer extends ResourceScanner {
 			}
 		}
 		return ResourceScannerServer.class.getResourceAsStream(
-				String.format("/assets/%s/%s", resLoc.getResourceDomain(),
-						resLoc.getResourcePath()));
+				String.format("/assets/%s/%s", resLoc.getResourceDomain(), resLoc.getResourcePath()));
 	}
 
-	private Set<ResourceLocation> scanZip(Path zipPath, String modid, String name) {
+	private Set<ResourceLocation> scanZip(Path zipPath, String name) {
 		try (ZipFile zip = new ZipFile(zipPath.toFile())) {
-			return getResourcesFromZip(zip, modid, name);
+			return getResourcesFromZip(zip, name);
 		} catch (IOException e) {
 			logger.error("Could not open the jar file", e);
 			return Sets.newHashSet();

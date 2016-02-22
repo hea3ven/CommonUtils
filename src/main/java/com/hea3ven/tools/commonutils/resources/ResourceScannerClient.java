@@ -66,12 +66,12 @@ public class ResourceScannerClient extends ResourceScanner {
 	}
 
 	@Override
-	public Iterable<ResourceLocation> scan(String modid, String name) {
+	public Iterable<ResourceLocation> scan(String name) {
 		Set<ResourceLocation> res = new HashSet<>();
 		IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
 		for (IResourceManager mgr : getDomainResourceManagers(resourceManager).values()) {
 			for (IResourcePack resPack : getResourcePackages(mgr)) {
-				res.addAll(getMaterials(resPack, modid, name));
+				res.addAll(getMaterials(resPack, name));
 			}
 		}
 		return res;
@@ -88,15 +88,15 @@ public class ResourceScannerClient extends ResourceScanner {
 				"domainResourceManagers");
 	}
 
-	private static Set<ResourceLocation> getMaterials(IResourcePack resPack, String modid, String name) {
+	private static Set<ResourceLocation> getMaterials(IResourcePack resPack, String name) {
 		if (resPack instanceof FolderResourcePack) {
 			File rootDir =
 					ReflectionHelper.getPrivateValue(AbstractResourcePack.class, (FolderResourcePack) resPack,
 							"field_110597_b", "resourcePackFile");
-			return getResourcesFromDir(Paths.get(rootDir.toString()), modid, name);
+			return getResourcesFromDir(Paths.get(rootDir.toString()), name);
 		} else if (resPack instanceof FileResourcePack) {
 			ZipFile packFile = getZipFromResPack((FileResourcePack) resPack);
-			return getResourcesFromZip(packFile, modid, name);
+			return getResourcesFromZip(packFile, name);
 		} else
 			return Sets.newHashSet();
 	}

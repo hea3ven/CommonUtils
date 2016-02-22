@@ -161,6 +161,10 @@ public class ProxyModBase {
 		return creativeTabs.get(name);
 	}
 
+	@SideOnly(Side.CLIENT)
+	protected void registerModelBakers() {
+	}
+
 	protected void registerRecipes() {
 	}
 
