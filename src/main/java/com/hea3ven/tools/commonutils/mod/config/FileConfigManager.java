@@ -29,6 +29,8 @@ public class FileConfigManager extends ConfigManager {
 	public List<IConfigElement> getConfigElements() {
 		List<IConfigElement> elems = new ArrayList<>();
 		for (String catName : conf.getCategoryNames()) {
+			if (catName.contains("."))
+				continue;
 			elems.add(new ConfigElement(conf.getCategory(catName)));
 		}
 		return elems;

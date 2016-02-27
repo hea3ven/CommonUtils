@@ -13,6 +13,8 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
 
+import com.hea3ven.tools.commonutils.util.ConfigurationUtil;
+
 public class FileConfigManagerBuilder implements ConfigManagerBuilder {
 	private String name;
 	private String desc;
@@ -138,16 +140,21 @@ public class FileConfigManagerBuilder implements ConfigManagerBuilder {
 				ConfigCategory category) {
 			category.setLanguageKey(getLanguageKey(modId));
 			for (ValueBuilder valBuilder : values) {
-				Property prop = new Property(valBuilder.name, valBuilder.defaultValue, valBuilder.type,
-						getLanguageKey(modId) + "." + valBuilder.name).setRequiresMcRestart(
-						valBuilder.requiresMcRestart)
+				Property prop = category.get(valBuilder.name);
+				if (prop == null)
+					prop = new Property(valBuilder.name, valBuilder.defaultValue, valBuilder.type);
+				prop.setLanguageKey(getLanguageKey(modId) + "." + valBuilder.name)
+						.setRequiresMcRestart(valBuilder.requiresMcRestart)
 						.setRequiresWorldRestart(valBuilder.requiresWorldRestart);
 				category.put(valBuilder.name, prop);
 				prop.comment = valBuilder.desc;
 				propListeners.put(prop, valBuilder.listener);
 			}
 			for (CategoryConfigManagerBuilder subCat : subCategories) {
-				subCat.build(modId, propListeners, new ConfigCategory(subCat.name, category));
+				ConfigCategory subCatConfig = ConfigurationUtil.getSubCategory(category, subCat.name);
+				if (subCatConfig == null)
+					subCatConfig = new ConfigCategory(subCat.name, category);
+				subCat.build(modId, propListeners, subCatConfig);
 			}
 		}
 
