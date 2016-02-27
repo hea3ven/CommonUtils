@@ -64,6 +64,7 @@ public class ProxyModBase {
 	ConfigManagerBuilder cfgMgrBuilder;
 	private SimpleNetworkWrapper netChannel;
 	KeyBindingManager keyBindingManager;
+	private ConfigManagerBuilder configManagerBuilder;
 
 	public ProxyModBase(String modId) {
 		this.modId = modId;
@@ -99,6 +100,10 @@ public class ProxyModBase {
 
 	public void addConfigManager(ConfigManagerBuilder cfgMgrBuilder) {
 		this.cfgMgrBuilder = cfgMgrBuilder;
+	}
+
+	public ConfigManagerBuilder getConfigManagerBuilder() {
+		return configManagerBuilder;
 	}
 
 	ConfigManager getConfigManager() {

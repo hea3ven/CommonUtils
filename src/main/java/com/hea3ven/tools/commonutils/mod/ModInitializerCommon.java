@@ -49,8 +49,10 @@ public abstract class ModInitializerCommon {
 			return;
 		Path configDir = Paths.get(event.getModConfigurationDirectory().toString());
 		proxy.cfgMgr = builder.build(proxy.getModId(), configDir);
-		MinecraftForge.EVENT_BUS.register(proxy.cfgMgr);
-		proxy.cfgMgr.onConfigChanged(null);
+		if(proxy.cfgMgr != null) {
+			MinecraftForge.EVENT_BUS.register(proxy.cfgMgr);
+			proxy.cfgMgr.onConfigChanged(null);
+		}
 	}
 
 	private void registerBlocks(ProxyModBase proxy) {

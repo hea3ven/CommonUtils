@@ -1,7 +1,5 @@
 package com.hea3ven.tools.commonutils.util;
 
-import java.util.function.Supplier;
-
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 

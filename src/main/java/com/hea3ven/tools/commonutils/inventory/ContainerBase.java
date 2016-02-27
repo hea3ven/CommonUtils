@@ -1,7 +1,6 @@
 package com.hea3ven.tools.commonutils.inventory;
 
 import java.lang.reflect.Constructor;
-import java.util.function.Function;
 
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
