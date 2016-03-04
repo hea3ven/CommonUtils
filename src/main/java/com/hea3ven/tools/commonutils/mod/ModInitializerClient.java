@@ -8,8 +8,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.renderer.block.statemap.StateMap;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraft.util.IStringSerializable;

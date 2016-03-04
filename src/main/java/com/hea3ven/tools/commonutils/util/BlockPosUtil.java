@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import com.google.common.collect.AbstractIterator;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 public class BlockPosUtil {
 

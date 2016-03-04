@@ -1,6 +1,6 @@
 package com.hea3ven.tools.commonutils.util;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 
 public class ModifiableBlockPos extends BlockPos {

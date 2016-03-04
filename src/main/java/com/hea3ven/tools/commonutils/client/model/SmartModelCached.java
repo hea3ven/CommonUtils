@@ -6,9 +6,9 @@ import com.google.common.base.Optional;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 
-import net.minecraftforge.client.model.IFlexibleBakedModel;
+
 import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
@@ -22,11 +22,11 @@ public class SmartModelCached extends DelegatedSmartModel implements ISmartBlock
 		cache = new HashMap<>();
 	}
 
-	public SmartModelCached(IFlexibleBakedModel delegate) {
+	public SmartModelCached(IBakedModel delegate) {
 		super(delegate);
 	}
 
-	public void put(IBlockState state, IFlexibleBakedModel model) {
+	public void put(IBlockState state, IBakedModel model) {
 		cache.put(calculateHash((IExtendedBlockState) state), new SmartModelCached(model));
 	}
 

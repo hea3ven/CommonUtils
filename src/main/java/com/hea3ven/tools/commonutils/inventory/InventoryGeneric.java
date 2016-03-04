@@ -5,7 +5,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -31,7 +31,7 @@ public class InventoryGeneric implements IInventory, INBTSerializable<NBTTagList
 	}
 
 	@Override
-	public IChatComponent getDisplayName() {
+	public ITextComponent getDisplayName() {
 		return null;
 	}
 

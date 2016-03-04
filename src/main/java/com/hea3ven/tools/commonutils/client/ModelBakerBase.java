@@ -17,7 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -67,19 +67,19 @@ public class ModelBakerBase {
 		}
 	}
 
-	protected IFlexibleBakedModel bake(IModel model) {
+	protected IBakedModel bake(IModel model) {
 		return bake(model, model.getDefaultState());
 	}
 
-	protected IFlexibleBakedModel bake(IModel model, VertexFormat format) {
+	protected IBakedModel bake(IModel model, VertexFormat format) {
 		return bake(model, model.getDefaultState(), format);
 	}
 
-	protected IFlexibleBakedModel bake(IModel model, IModelState modelState) {
+	protected IBakedModel bake(IModel model, IModelState modelState) {
 		return bake(model, modelState, Attributes.DEFAULT_BAKED_FORMAT);
 	}
 
-	protected IFlexibleBakedModel bake(IModel model, IModelState modelState, VertexFormat format) {
+	protected IBakedModel bake(IModel model, IModelState modelState, VertexFormat format) {
 		Function<ResourceLocation, TextureAtlasSprite> textureGetter =
 				new Function<ResourceLocation, TextureAtlasSprite>() {
 					public TextureAtlasSprite apply(ResourceLocation location) {

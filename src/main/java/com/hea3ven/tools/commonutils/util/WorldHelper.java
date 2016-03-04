@@ -1,7 +1,7 @@
 package com.hea3ven.tools.commonutils.util;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 public class WorldHelper {

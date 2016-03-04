@@ -5,25 +5,25 @@ import java.util.List;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
 
-import net.minecraftforge.client.model.IFlexibleBakedModel;
+
 
 @SuppressWarnings("deprecation")
 public class DelegatedSmartModel implements IBakedModel {
 
-	private IFlexibleBakedModel delegate;
+	private IBakedModel delegate;
 
-	public DelegatedSmartModel(IFlexibleBakedModel delegate) {
+	public DelegatedSmartModel(IBakedModel delegate) {
 		this.delegate = delegate;
 	}
 
-	public IFlexibleBakedModel getDelegate() {
+	public IBakedModel getDelegate() {
 		return delegate;
 	}
 
-	public void setDelegate(IFlexibleBakedModel delegate) {
+	public void setDelegate(IBakedModel delegate) {
 		this.delegate = delegate;
 	}
 

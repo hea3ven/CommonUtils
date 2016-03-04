@@ -6,13 +6,13 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 
 public class BlockStateUtil {
 
-	public static BlockState addProperties(Block block, BlockState parentBlockState, IProperty[] properties) {
+	public static BlockStateContainer addProperties(Block block, BlockStateContainer parentBlockState, IProperty[] properties) {
 		List<IProperty> newProperties = new ArrayList<>(parentBlockState.getProperties());
 		Collections.addAll(newProperties, properties);
-		return new BlockState(block, newProperties.toArray(new IProperty[newProperties.size()]));
+		return new BlockStateContainer(block, newProperties.toArray(new IProperty[newProperties.size()]));
 	}
 }
