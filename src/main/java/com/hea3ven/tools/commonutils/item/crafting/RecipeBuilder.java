@@ -17,6 +17,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public class RecipeBuilder<T extends RecipeBuilder> {
 	private boolean shaped = true;
 	private ItemStack output;
+	private String outputIngredient;
 	private int outputSize = 1;
 	private String[] ingredients;
 
@@ -24,7 +25,7 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 		if (ingredients == null)
 			throw new IllegalStateException("No ingredients were defined");
 
-		ItemStack result = output.copy();
+		ItemStack result = (outputIngredient != null) ? parseStack(outputIngredient) : output.copy();
 		result.stackSize = outputSize;
 		if (shaped) {
 			Map<Character, Boolean> mappings = new HashMap<>();
@@ -70,14 +71,21 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 	protected Object parseIngredient(String ingredient) {
 		if (ingredient.indexOf(':') != -1)
 			return ingredient;
-		Block block = Block.getBlockFromName(ingredient);
-		if (block != null)
-			return block;
-		Item item = Item.getByNameOrId(ingredient);
-		if (item != null)
-			return item;
+		ItemStack stack = parseStack(ingredient);
+		if (stack != null)
+			return stack;
 		if (isOreDict(ingredient))
 			return ingredient;
+		return null;
+	}
+
+	private ItemStack parseStack(String ingredient) {
+		Block block = Block.getBlockFromName(ingredient);
+		if (block != null)
+			return new ItemStack(block);
+		Item item = Item.getByNameOrId(ingredient);
+		if (item != null)
+			return new ItemStack(item);
 		return null;
 	}
 
@@ -87,6 +95,11 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 
 	public T shaped(boolean shaped) {
 		this.shaped = shaped;
+		return (T) this;
+	}
+
+	public T output(String ingredient) {
+		outputIngredient = ingredient;
 		return (T) this;
 	}
 
