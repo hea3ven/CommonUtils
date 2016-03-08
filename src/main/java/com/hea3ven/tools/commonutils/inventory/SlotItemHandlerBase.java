@@ -12,6 +12,12 @@ public class SlotItemHandlerBase extends SlotItemHandler {
 
 	@Override
 	public void putStack(ItemStack stack) {
+		ItemStack slotStack = itemHandler.getStackInSlot(getSlotIndex());
+		if (slotStack != null) {
+			if(slotStack.stackSize == 0)
+				slotStack.stackSize = 1;
+			itemHandler.extractItem(getSlotIndex(), slotStack.stackSize, false);
+		}
 		itemHandler.insertItem(getSlotIndex(), stack, false);
 		onSlotChanged();
 	}

@@ -19,7 +19,7 @@ public class MetadataManagerBuilder {
 	}
 
 	public<T extends Comparable<T>> MetadataManagerBuilder map(byte size, IProperty<T> prop) {
-		parts.add(new MetadataManager.MetadataPart<T>(offset, size, prop));
+		parts.add(new MetadataManager.MetadataPart<>(offset, size, prop));
 		offset += size;
 		return this;
 	}

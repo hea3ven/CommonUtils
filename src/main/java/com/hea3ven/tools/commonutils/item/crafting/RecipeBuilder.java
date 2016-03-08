@@ -93,16 +93,19 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 		return OreDictionary.doesOreNameExist(ingredient);
 	}
 
+	@SuppressWarnings("unchecked")
 	public T shaped(boolean shaped) {
 		this.shaped = shaped;
 		return (T) this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T output(String ingredient) {
 		outputIngredient = ingredient;
 		return (T) this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T output(ItemStack stack) {
 		output = stack;
 		return (T) this;
@@ -116,11 +119,13 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 		return output(new ItemStack(block));
 	}
 
+	@SuppressWarnings("unchecked")
 	public T outputAmount(int size) {
 		outputSize = size;
 		return (T) this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T ingredients(String... ingredients) {
 		this.ingredients = ingredients;
 		return (T) this;
