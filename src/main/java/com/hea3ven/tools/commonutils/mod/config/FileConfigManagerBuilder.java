@@ -46,6 +46,12 @@ public class FileConfigManagerBuilder implements ConfigManagerBuilder {
 		return this;
 	}
 
+	public FileConfigManagerBuilder add(CategoryConfigManagerBuilder cat) {
+		categories.add(cat);
+		cat.parent = this;
+		return this;
+	}
+
 	@Override
 	public ConfigManager build(String modId, Path path) {
 		Path filePath = path.resolve(fileName);
@@ -60,14 +66,14 @@ public class FileConfigManagerBuilder implements ConfigManagerBuilder {
 		return new FileConfigManager(modId, name, desc, conf, propListeners);
 	}
 
-	public ConfigManagerBuilder Update(Consumer<Configuration> updater) {
+	public FileConfigManagerBuilder Update(Consumer<Configuration> updater) {
 		this.updater = updater;
 		return this;
 	}
 
 	public static class CategoryConfigManagerBuilder implements ConfigManagerBuilder {
 
-		private final FileConfigManagerBuilder parent;
+		private FileConfigManagerBuilder parent;
 		private CategoryConfigManagerBuilder parentCat;
 		private final String name;
 		private List<CategoryConfigManagerBuilder> subCategories = new ArrayList<>();
@@ -96,7 +102,20 @@ public class FileConfigManagerBuilder implements ConfigManagerBuilder {
 			return addValue(name, defaultValue, type, desc, listener, false, false);
 		}
 
+		public CategoryConfigManagerBuilder addValue(String name, String[] defaultValue, Property.Type type,
+				String desc, Consumer<Property> listener) {
+			return addValue(name, defaultValue, type, desc, listener, false, false);
+		}
+
 		public CategoryConfigManagerBuilder addValue(String name, String defaultValue, Property.Type type,
+				String desc, Consumer<Property> listener, boolean requiresMcRestart,
+				boolean requiresWorldRestart) {
+			values.add(new ValueBuilder(name, defaultValue, type, desc, listener, requiresMcRestart,
+					requiresWorldRestart));
+			return this;
+		}
+
+		public CategoryConfigManagerBuilder addValue(String name, String[] defaultValue, Property.Type type,
 				String desc, Consumer<Property> listener, boolean requiresMcRestart,
 				boolean requiresWorldRestart) {
 			values.add(new ValueBuilder(name, defaultValue, type, desc, listener, requiresMcRestart,
@@ -141,8 +160,12 @@ public class FileConfigManagerBuilder implements ConfigManagerBuilder {
 			category.setLanguageKey(getLanguageKey(modId));
 			for (ValueBuilder valBuilder : values) {
 				Property prop = category.get(valBuilder.name);
-				if (prop == null)
-					prop = new Property(valBuilder.name, valBuilder.defaultValue, valBuilder.type);
+				if (prop == null) {
+					if (valBuilder.defaultValues == null)
+						prop = new Property(valBuilder.name, valBuilder.defaultValue, valBuilder.type);
+					else
+						prop = new Property(valBuilder.name, valBuilder.defaultValues, valBuilder.type);
+				}
 				prop.setLanguageKey(getLanguageKey(modId) + "." + valBuilder.name)
 						.setRequiresMcRestart(valBuilder.requiresMcRestart)
 						.setRequiresWorldRestart(valBuilder.requiresWorldRestart);
@@ -169,6 +192,7 @@ public class FileConfigManagerBuilder implements ConfigManagerBuilder {
 	public static class ValueBuilder {
 		private final String name;
 		private final String defaultValue;
+		private String[] defaultValues;
 		private final Type type;
 		private final String desc;
 		private final Consumer<Property> listener;
@@ -179,11 +203,18 @@ public class FileConfigManagerBuilder implements ConfigManagerBuilder {
 				Consumer<Property> listener, boolean requiresMcRestart, boolean requiresWorldRestart) {
 			this.name = name;
 			this.defaultValue = defaultValue;
+			this.defaultValues = null;
 			this.type = type;
 			this.desc = desc;
 			this.listener = listener;
 			this.requiresMcRestart = requiresMcRestart;
 			this.requiresWorldRestart = requiresWorldRestart;
+		}
+
+		public ValueBuilder(String name, String[] defaultValues, Type type, String desc,
+				Consumer<Property> listener, boolean requiresMcRestart, boolean requiresWorldRestart) {
+			this(name, (String) null, type, desc, listener, requiresMcRestart, requiresWorldRestart);
+			this.defaultValues = defaultValues;
 		}
 	}
 }
