@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -15,6 +17,8 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class RecipeBuilder<T extends RecipeBuilder> {
+	private static final Pattern itemPattern = Pattern.compile("((\\d+)x)?(\\w*:\\w*)(@(\\d+))?");
+
 	private boolean shaped = true;
 	private ItemStack output;
 	private String outputIngredient;
@@ -26,7 +30,8 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 			throw new IllegalStateException("No ingredients were defined");
 
 		ItemStack result = (outputIngredient != null) ? parseStack(outputIngredient) : output.copy();
-		result.stackSize = outputSize;
+		if (result.stackSize == 1)
+			result.stackSize = outputSize;
 		if (shaped) {
 			Map<Character, Boolean> mappings = new HashMap<>();
 			List<Object> processedIngredients = new ArrayList<>();
@@ -69,8 +74,6 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 	}
 
 	protected Object parseIngredient(String ingredient) {
-		if (ingredient.indexOf(':') != -1)
-			return ingredient;
 		ItemStack stack = parseStack(ingredient);
 		if (stack != null)
 			return stack;
@@ -83,9 +86,14 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 		Block block = Block.getBlockFromName(ingredient);
 		if (block != null)
 			return new ItemStack(block);
-		Item item = Item.getByNameOrId(ingredient);
-		if (item != null)
-			return new ItemStack(item);
+
+		Matcher match = itemPattern.matcher(ingredient);
+		if (match.matches()) {
+			Item item = Item.getByNameOrId(match.group(3));
+			int size = match.group(2) != null ? Integer.parseInt(match.group(2)) : 1;
+			int meta = match.group(5) != null ? Integer.parseInt(match.group(5)) : 0;
+			return new ItemStack(item, size, meta);
+		}
 		return null;
 	}
 
