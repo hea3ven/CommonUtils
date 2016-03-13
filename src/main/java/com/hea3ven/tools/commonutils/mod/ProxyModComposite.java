@@ -26,9 +26,10 @@ public class ProxyModComposite extends ProxyModBase {
 	public void addModule(String name, String clsName) {
 		Class<? extends ProxyModBase> cls = null;
 		try {
-			cls = (Class<? extends ProxyModBase>) Loader.instance().getModClassLoader().loadClass(clsName);
+			cls = Loader.instance().getModClassLoader().loadClass(clsName).asSubclass(ProxyModBase.class);
 		} catch (ClassNotFoundException e) {
 			Throwables.propagate(e);
+			return;
 		}
 		ProxyModBase child = null;
 		try {
@@ -39,6 +40,7 @@ public class ProxyModComposite extends ProxyModBase {
 		children.put(name, child);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends ProxyModBase> T getModule(String name) {
 		return (T) children.get(name);
 	}

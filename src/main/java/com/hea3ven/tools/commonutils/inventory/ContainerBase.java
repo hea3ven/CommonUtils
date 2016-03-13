@@ -124,7 +124,7 @@ public abstract class ContainerBase extends Container {
 			}
 
 			while (!reverseDirection && i < endIndex || reverseDirection && i >= startIndex) {
-				Slot slot1 = (Slot) this.inventorySlots.get(i);
+				Slot slot1 = this.inventorySlots.get(i);
 				ItemStack itemstack1 = slot1.getStack();
 
 				if (itemstack1 == null &&

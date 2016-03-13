@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -15,8 +17,11 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class RecipeBuilder<T extends RecipeBuilder> {
+	private static final Pattern itemPattern = Pattern.compile("((\\d+)x)?(\\w*:\\w*)(@(\\d+))?");
+
 	private boolean shaped = true;
 	private ItemStack output;
+	private String outputIngredient;
 	private int outputSize = 1;
 	private String[] ingredients;
 
@@ -24,8 +29,9 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 		if (ingredients == null)
 			throw new IllegalStateException("No ingredients were defined");
 
-		ItemStack result = output.copy();
-		result.stackSize = outputSize;
+		ItemStack result = (outputIngredient != null) ? parseStack(outputIngredient) : output.copy();
+		if (result.stackSize == 1)
+			result.stackSize = outputSize;
 		if (shaped) {
 			Map<Character, Boolean> mappings = new HashMap<>();
 			List<Object> processedIngredients = new ArrayList<>();
@@ -68,16 +74,26 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 	}
 
 	protected Object parseIngredient(String ingredient) {
-		if (ingredient.indexOf(':') != -1)
-			return ingredient;
-		Block block = Block.getBlockFromName(ingredient);
-		if (block != null)
-			return block;
-		Item item = Item.getByNameOrId(ingredient);
-		if (item != null)
-			return item;
+		ItemStack stack = parseStack(ingredient);
+		if (stack != null)
+			return stack;
 		if (isOreDict(ingredient))
 			return ingredient;
+		return null;
+	}
+
+	private ItemStack parseStack(String ingredient) {
+		Block block = Block.getBlockFromName(ingredient);
+		if (block != null)
+			return new ItemStack(block);
+
+		Matcher match = itemPattern.matcher(ingredient);
+		if (match.matches()) {
+			Item item = Item.getByNameOrId(match.group(3));
+			int size = match.group(2) != null ? Integer.parseInt(match.group(2)) : 1;
+			int meta = match.group(5) != null ? Integer.parseInt(match.group(5)) : 0;
+			return new ItemStack(item, size, meta);
+		}
 		return null;
 	}
 
@@ -85,11 +101,19 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 		return OreDictionary.doesOreNameExist(ingredient);
 	}
 
+	@SuppressWarnings("unchecked")
 	public T shaped(boolean shaped) {
 		this.shaped = shaped;
 		return (T) this;
 	}
 
+	@SuppressWarnings("unchecked")
+	public T output(String ingredient) {
+		outputIngredient = ingredient;
+		return (T) this;
+	}
+
+	@SuppressWarnings("unchecked")
 	public T output(ItemStack stack) {
 		output = stack;
 		return (T) this;
@@ -103,11 +127,13 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 		return output(new ItemStack(block));
 	}
 
+	@SuppressWarnings("unchecked")
 	public T outputAmount(int size) {
 		outputSize = size;
 		return (T) this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T ingredients(String... ingredients) {
 		this.ingredients = ingredients;
 		return (T) this;

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -113,23 +112,27 @@ public class ProxyModBase {
 	protected void registerBlocks() {
 	}
 
-	public void addBlock(Block block) {
+	public Block addBlock(Block block) {
 		addBlock(block, block.getUnlocalizedName());
+		return block;
 	}
 
-	public void addBlock(Block block, String name) {
+	public Block addBlock(Block block, String name) {
 		addBlock(block, name, ItemBlock.class);
+		return block;
 	}
 
-	public void addBlock(Block block, String name, Class<? extends ItemBlock> itemCls, Object... itemArgs) {
+	public Block addBlock(Block block, String name, Class<? extends ItemBlock> itemCls, Object... itemArgs) {
 		blocks.add(new InfoBlock(block, modId, name, itemCls, itemArgs));
+		return block;
 	}
 
-	public void addBlockVariant(Block block, String name, Class<? extends ItemBlock> itemCls,
+	public Block addBlockVariant(Block block, String name, Class<? extends ItemBlock> itemCls,
 			Object[] itemArgs, IProperty variantProp, String variantSuffix,
 			Map<Object, Integer> variantMetas) {
 		blocks.add(new InfoBlockVariant(block, modId, name, itemCls, itemArgs, variantProp, variantSuffix,
 				variantMetas));
+		return block;
 	}
 
 	protected void registerTileEntities() {
@@ -142,24 +145,44 @@ public class ProxyModBase {
 	protected void registerItems() {
 	}
 
-	public void addItem(Item item, String name) {
+	public Item addItem(Item item, String name) {
 		items.add(new InfoItem(item, modId, name));
+		return item;
 	}
 
-	public void addItem(Item item, String name, String[] variants) {
+	public Item addItem(Item item, String name, String[] variants) {
 		items.add(new InfoItem(item, modId, name, variants));
+		return item;
 	}
 
 	protected void registerCreativeTabs() {
 	}
 
-	public void addCreativeTab(String name, final Supplier<Item> icon) {
-		creativeTabs.put(name, new CreativeTabs(name) {
+	public CreativeTabs addCreativeTab(String name, final Item icon) {
+		CreativeTabs tab = new CreativeTabs(name) {
 			@Override
 			public Item getTabIconItem() {
-				return icon.get();
+				return icon;
 			}
-		});
+		};
+		creativeTabs.put(name, tab);
+		return tab;
+	}
+
+	public CreativeTabs addCreativeTab(String name, final ItemStack icon) {
+		CreativeTabs tab = new CreativeTabs(name) {
+			@Override
+			public Item getTabIconItem() {
+				return icon.getItem();
+			}
+
+			@Override
+			public ItemStack getIconItemStack() {
+				return icon;
+			}
+		};
+		creativeTabs.put(name, tab);
+		return tab;
 	}
 
 	public CreativeTabs getCreativeTab(String name) {

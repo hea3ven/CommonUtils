@@ -75,7 +75,8 @@ public class ModInitializerClient extends ModInitializerCommon {
 			if (item.getVariants() == null)
 				continue;
 			for (String variant : item.getVariants()) {
-				ModelLoader.addVariantName(item.getItem(), item.getDomain() + ":" + variant);
+				ModelLoader.registerItemVariants(item.getItem(),
+						new ResourceLocation(item.getDomain(), variant));
 			}
 		}
 	}

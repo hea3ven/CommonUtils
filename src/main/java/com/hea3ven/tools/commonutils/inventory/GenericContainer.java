@@ -16,7 +16,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public class GenericContainer extends ContainerBase {
 
-	private IInventory updateHandler = null;
+	private IUpdateHandler updateHandler = null;
 	private int[] valuesCache;
 
 	private List<SlotType> slotsTypes = Lists.newArrayList();
@@ -104,8 +104,27 @@ public class GenericContainer extends ContainerBase {
 		return this;
 	}
 
-	public GenericContainer setUpdateHandler(IInventory inv) {
-		updateHandler = inv;
+	public GenericContainer setUpdateHandler(final IInventory inv) {
+		return setUpdateHandler(new IUpdateHandler() {
+			@Override
+			public int getFieldCount() {
+				return inv.getFieldCount();
+			}
+
+			@Override
+			public void setField(int id, int data) {
+				inv.setField(id, data);
+			}
+
+			@Override
+			public int getField(int id) {
+				return inv.getField(id);
+			}
+		});
+	}
+
+	public GenericContainer setUpdateHandler(IUpdateHandler updateHandler) {
+		this.updateHandler = updateHandler;
 		valuesCache = null;
 		return this;
 	}
@@ -123,10 +142,11 @@ public class GenericContainer extends ContainerBase {
 
 	@Override
 	public void detectAndSendChanges() {
+		super.detectAndSendChanges();
+
 		if (updateHandler == null)
 			return;
 
-		super.detectAndSendChanges();
 		if (valuesCache == null) {
 			valuesCache = new int[updateHandler.getFieldCount()];
 			for (int i = 0; i < updateHandler.getFieldCount(); i++) {
