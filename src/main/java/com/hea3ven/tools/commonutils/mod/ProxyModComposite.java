@@ -24,7 +24,7 @@ public class ProxyModComposite extends ProxyModBase {
 	}
 
 	public void addModule(String name, String clsName) {
-		Class<? extends ProxyModBase> cls = null;
+		Class<? extends ProxyModBase> cls;
 		try {
 			cls = Loader.instance().getModClassLoader().loadClass(clsName).asSubclass(ProxyModBase.class);
 		} catch (ClassNotFoundException e) {
