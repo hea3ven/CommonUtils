@@ -8,4 +8,12 @@ public class SidedCall {
 		if (FMLCommonHandler.instance().getSide() == side)
 			call.run();
 	}
+
+	public static class SidedRunnable implements Runnable {
+
+		@Override
+		public void run() {
+
+		}
+	}
 }
