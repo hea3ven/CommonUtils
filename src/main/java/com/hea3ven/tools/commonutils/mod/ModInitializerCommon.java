@@ -9,11 +9,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.hea3ven.tools.commonutils.mod.config.ConfigManagerBuilder;
-import com.hea3ven.tools.commonutils.util.SidedCall;
 
 public abstract class ModInitializerCommon {
 
@@ -24,12 +21,6 @@ public abstract class ModInitializerCommon {
 		registerTileEntities(proxy);
 		registerItems(proxy);
 		registerCreativeTabs(proxy);
-		SidedCall.run(Side.CLIENT, new Runnable() {
-			@Override
-			public void run() {
-				registerModelBakers(proxy);
-			}
-		});
 	}
 
 	public void onInitEvent(ProxyModBase proxy) {
@@ -79,11 +70,6 @@ public abstract class ModInitializerCommon {
 
 	private void registerCreativeTabs(ProxyModBase proxy) {
 		proxy.registerCreativeTabs();
-	}
-
-	@SideOnly(Side.CLIENT)
-	private void registerModelBakers(ProxyModBase proxy) {
-		proxy.registerModelBakers();
 	}
 
 	private void registerNetworkPackets(ProxyModBase proxy) {

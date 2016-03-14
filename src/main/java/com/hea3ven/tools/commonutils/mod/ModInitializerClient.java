@@ -30,6 +30,7 @@ public class ModInitializerClient extends ModInitializerCommon {
 		registerVariantBlocks(proxy);
 		registerVariantItems(proxy);
 		registerBlocksItemModels(proxy);
+		registerModelBakers(proxy);
 	}
 
 	@Override
@@ -108,6 +109,10 @@ public class ModInitializerClient extends ModInitializerCommon {
 				}
 			}
 		}
+	}
+
+	private void registerModelBakers(ProxyModBase proxy) {
+		proxy.registerModelBakers();
 	}
 
 	private void registerKeyBindings(ProxyModBase proxy) {
