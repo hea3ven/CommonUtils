@@ -1,3 +1,6 @@
+1.1.1:
+	* Add SidedRunnable helper class
+
 1.1.0:
 	* Add support for IItemHandler in the Container classes
 	* Add commands handling
