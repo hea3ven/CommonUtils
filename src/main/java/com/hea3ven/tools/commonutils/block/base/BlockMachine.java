@@ -6,6 +6,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.IScoreCriteria.EnumRenderType;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -26,8 +29,8 @@ public abstract class BlockMachine extends BlockContainer {
 	}
 
 	@Override
-	public int getRenderType() {
-		return 3;
+	public EnumBlockRenderType getRenderType(IBlockState state) {
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
@@ -43,13 +46,17 @@ public abstract class BlockMachine extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state,
-			EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+			EnumHand side, ItemStack hitX, EnumFacing hitY, float hitZ, float p_180639_9_,
+			float p_180639_10_) {
 		TileMachine te = WorldHelper.getTile(world, pos);
-		if (te != null) {
+		if (te != null)
+
+		{
 			playerIn.openGui(guiModId, guiId, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		}
+
 		return false;
 	}
 }

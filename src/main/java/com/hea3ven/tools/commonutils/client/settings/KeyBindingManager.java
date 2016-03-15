@@ -17,6 +17,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
+import com.hea3ven.tools.commonutils.util.PlayerUtil;
+import com.hea3ven.tools.commonutils.util.PlayerUtil.HeldEquipment;
+
 public class KeyBindingManager {
 	private final Map<KeyBinding, Consumer<InputEvent.KeyInputEvent>> keyBindings = new HashMap<>();
 	private final Map<Item, Function<MouseEvent, Boolean>> scrollWheelBindings = new HashMap<>();
@@ -31,8 +34,9 @@ public class KeyBindingManager {
 		addKeyBinding(description, keyCode, category, new Consumer<KeyInputEvent>() {
 			@Override
 			public void accept(KeyInputEvent keyInputEvent) {
-				ItemStack stack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
-				if (stack != null && stack.getItem() == item) {
+				HeldEquipment equipment =
+						PlayerUtil.getHeldEquipment(Minecraft.getMinecraft().thePlayer, item);
+				if (equipment != null) {
 					callback.accept(keyInputEvent);
 				}
 			}
@@ -59,11 +63,10 @@ public class KeyBindingManager {
 	@SubscribeEvent
 	public void onMouseEvent(MouseEvent event) {
 		if (event.dwheel != 0 && Minecraft.getMinecraft().gameSettings.keyBindSneak.isKeyDown()) {
-			ItemStack stack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
-			if (stack == null)
-				return;
 			for (Entry<Item, Function<MouseEvent, Boolean>> entry : scrollWheelBindings.entrySet()) {
-				if (stack.getItem() == entry.getKey()) {
+				HeldEquipment equipment =
+						PlayerUtil.getHeldEquipment(Minecraft.getMinecraft().thePlayer, entry.getKey());
+				if (equipment != null) {
 					if (entry.getValue().apply(event)) {
 						event.setCanceled(true);
 						return;
