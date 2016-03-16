@@ -47,7 +47,7 @@ public class ProxyModBase {
 
 	private ModInitializerCommon modInitializer;
 
-	private String modId;
+	protected String modId;
 
 	List<InfoBlock> blocks = Lists.newArrayList();
 	List<InfoTileEntity> tiles = Lists.newArrayList();
