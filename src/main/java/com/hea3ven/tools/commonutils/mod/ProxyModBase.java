@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -52,6 +53,7 @@ public class ProxyModBase {
 	List<InfoBlock> blocks = Lists.newArrayList();
 	List<InfoTileEntity> tiles = Lists.newArrayList();
 	List<InfoItem> items = Lists.newArrayList();
+	List<InfoEnchantment> enchantments = Lists.newArrayList();
 	List<IRecipe> recipes = Lists.newArrayList();
 	Map<String, CreativeTabs> creativeTabs = Maps.newHashMap();
 
@@ -229,6 +231,11 @@ public class ProxyModBase {
 	}
 
 	protected void registerEnchantments() {
+	}
+
+	public Enchantment addEnchantment(Enchantment enchantment, String name) {
+		enchantments.add(new InfoEnchantment(enchantment, modId, name));
+		return enchantment;
 	}
 
 	protected void registerGuis() {
