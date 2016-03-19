@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
 
-@SuppressWarnings("deprecation")
 public class DelegatedSmartModel implements IBakedModel {
 
 	private IBakedModel delegate;
@@ -53,6 +52,7 @@ public class DelegatedSmartModel implements IBakedModel {
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public ItemCameraTransforms getItemCameraTransforms() {
 		return delegate.getItemCameraTransforms();
 	}
