@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ProxyModComposite extends ProxyModBase {
-	private Map<String, ProxyModBase> children = new HashMap<>();
+	private Map<String, ProxyModModule> children = new HashMap<>();
 
 	public ProxyModComposite(String modId) {
 		super(modId);
@@ -24,25 +24,25 @@ public class ProxyModComposite extends ProxyModBase {
 	}
 
 	public void addModule(String name, String clsName) {
-		Class<? extends ProxyModBase> cls;
+		Class<? extends ProxyModModule> cls;
 		try {
-			cls = Loader.instance().getModClassLoader().loadClass(clsName).asSubclass(ProxyModBase.class);
+			cls = Loader.instance().getModClassLoader().loadClass(clsName).asSubclass(ProxyModModule.class);
 		} catch (ClassNotFoundException e) {
 			Throwables.propagate(e);
 			return;
 		}
-		ProxyModBase child = null;
+		ProxyModModule child = null;
 		try {
-			child = cls.getConstructor(String.class).newInstance(getModId());
+			child = cls.getConstructor().newInstance();
 		} catch (Exception e) {
 			Throwables.propagate(e);
 		}
 		children.put(name, child);
+		child.setParent(this);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T extends ProxyModBase> T getModule(String name) {
-		return (T) children.get(name);
+	public ProxyModModule getModule(String name) {
+		return children.get(name);
 	}
 
 	@Override
