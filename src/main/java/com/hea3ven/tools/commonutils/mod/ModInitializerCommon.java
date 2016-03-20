@@ -3,7 +3,10 @@ package com.hea3ven.tools.commonutils.mod;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -16,7 +19,7 @@ public abstract class ModInitializerCommon {
 
 	public void onPreInitEvent(final ProxyModBase proxy, FMLPreInitializationEvent event) {
 		registerConfig(proxy, event);
-		proxy.registerEnchantments();
+		registerEnchantments(proxy);
 		registerBlocks(proxy);
 		registerTileEntities(proxy);
 		registerItems(proxy);
@@ -40,9 +43,19 @@ public abstract class ModInitializerCommon {
 			return;
 		Path configDir = Paths.get(event.getModConfigurationDirectory().toString());
 		proxy.cfgMgr = builder.build(proxy.getModId(), configDir);
-		if(proxy.cfgMgr != null) {
+		if (proxy.cfgMgr != null) {
 			MinecraftForge.EVENT_BUS.register(proxy.cfgMgr);
 			proxy.cfgMgr.onConfigChanged(null);
+		}
+	}
+
+	// TODO: Fix when there is a proper way to register
+	private static int nextId = 100;
+	private void registerEnchantments(ProxyModBase proxy) {
+		proxy.registerEnchantments();
+		for (InfoEnchantment ench : proxy.enchantments) {
+			ResourceLocation key = new ResourceLocation(ench.getDomain(), ench.getName());
+			Enchantment.enchantmentRegistry.register(nextId++, key, ench.getEnchantment());
 		}
 	}
 
