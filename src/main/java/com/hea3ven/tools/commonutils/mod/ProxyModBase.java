@@ -1,5 +1,6 @@
 package com.hea3ven.tools.commonutils.mod;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -10,6 +11,9 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
@@ -38,6 +42,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import com.hea3ven.tools.commonutils.client.ModelBakerBase;
+import com.hea3ven.tools.commonutils.client.renderer.color.IColorHandler;
 import com.hea3ven.tools.commonutils.client.settings.KeyBindingManager;
 import com.hea3ven.tools.commonutils.inventory.GenericGuiHandler;
 import com.hea3ven.tools.commonutils.inventory.ISimpleGuiHandler;
@@ -193,6 +198,40 @@ public class ProxyModBase {
 
 	@SideOnly(Side.CLIENT)
 	protected void registerModelBakers() {
+	}
+
+	@SideOnly(Side.CLIENT)
+	protected void registerColors() {
+	}
+
+	public void addColors(IColorHandler color, Collection<Block> blocks) {
+		addBlockColors(color, blocks);
+		addItemColors(color, blocks.toArray(new Block[0]));
+	}
+
+	public void addColors(IColorHandler color, Block... blocks) {
+		addBlockColors(color, blocks);
+		addItemColors(color, blocks);
+	}
+
+	public void addBlockColors(IBlockColor blockColor, Collection<Block> blocks) {
+		addBlockColors(blockColor, blocks.toArray(new Block[0]));
+	}
+
+	public void addBlockColors(IBlockColor blockColor, Block... blocks) {
+		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(blockColor, blocks);
+	}
+
+	public void addItemColors(IItemColor itemColor, Collection<Item> blocks) {
+		addItemColors(itemColor, blocks.toArray(new Item[0]));
+	}
+
+	public void addItemColors(IItemColor itemColor, Item... blocks) {
+		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColor, blocks);
+	}
+
+	public void addItemColors(IItemColor itemColor, Block[] blocks) {
+		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColor, blocks);
 	}
 
 	protected void registerRecipes() {

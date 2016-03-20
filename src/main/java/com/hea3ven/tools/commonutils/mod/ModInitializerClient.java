@@ -7,9 +7,9 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraft.util.IStringSerializable;
@@ -36,6 +36,7 @@ public class ModInitializerClient extends ModInitializerCommon {
 	@Override
 	public void onInitEvent(ProxyModBase proxy) {
 		super.onInitEvent(proxy);
+		registerColors(proxy);
 		registerKeyBindings(proxy);
 	}
 
@@ -113,6 +114,10 @@ public class ModInitializerClient extends ModInitializerCommon {
 
 	private void registerModelBakers(ProxyModBase proxy) {
 		proxy.registerModelBakers();
+	}
+
+	private void registerColors(ProxyModBase proxy) {
+		proxy.registerColors();
 	}
 
 	private void registerKeyBindings(ProxyModBase proxy) {
