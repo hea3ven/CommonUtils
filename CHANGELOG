@@ -1,3 +1,8 @@
+2.0.1:
+	* Add ResourceScanner.getAllResources
+	* Make BakerUtil.retexture take a Map in stead of a HashMap
+	* Fix IItemColor/IBlockColor trying to be loaded in the server by ProxyModBase
+
 2.0.0:
 	* Update to Minecraft 1.9
 	* Add PlayerUtil with helper to handle hands equipment
