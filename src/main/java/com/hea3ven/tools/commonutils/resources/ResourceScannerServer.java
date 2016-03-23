@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -95,6 +96,43 @@ public class ResourceScannerServer extends ResourceScanner {
 		}
 		return ResourceScannerServer.class.getResourceAsStream(
 				String.format("/assets/%s/%s", resLoc.getResourceDomain(), resLoc.getResourcePath()));
+	}
+
+	@Override
+	public Iterable<InputStream> getAllResources(ResourceLocation resLoc) throws IOException {
+		List<InputStream> resources = new ArrayList<>();
+		for (Path dir : modDirectories) {
+			Path resPath = dir.resolve("assets")
+					.resolve(resLoc.getResourceDomain())
+					.resolve(resLoc.getResourcePath());
+			if (Files.exists(resPath))
+				resources.add(Files.newInputStream(resPath, StandardOpenOption.READ));
+		}
+		for (Path resPack : modResourcePacks) {
+			try (ZipFile zip = new ZipFile(resPack.toFile())) {
+				ZipEntry entry = zip.getEntry(
+						String.format("assets/%s/%s", resLoc.getResourceDomain(), resLoc.getResourcePath()));
+				if (entry != null) {
+					ByteArrayOutputStream data = new ByteArrayOutputStream();
+					try (InputStream entryStream = zip.getInputStream(entry)) {
+						int length;
+						byte[] buffer = new byte[2048];
+						while ((length = entryStream.read(buffer)) > 0) {
+							data.write(buffer, 0, length);
+						}
+						resources.add(new ByteArrayInputStream(data.toByteArray()));
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		ClassLoader classLoader = ResourceScannerServer.class.getClassLoader();
+		String path = String.format("assets/%s/%s", resLoc.getResourceDomain(), resLoc.getResourcePath());
+		for (URL url : Collections.list(classLoader.getResources(path))) {
+			resources.add(url.openStream());
+		}
+		return resources;
 	}
 
 	private Set<ResourceLocation> scanZip(Path zipPath, String name) {

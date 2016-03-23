@@ -14,7 +14,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipFile;
 
+import com.google.common.base.Function;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
@@ -32,6 +34,17 @@ public class ResourceScannerClient extends ResourceScanner {
 	@Override
 	public InputStream getResource(ResourceLocation resLoc) throws IOException {
 		return Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream();
+	}
+
+	@Override
+	public Iterable<InputStream> getAllResources(ResourceLocation resLoc) throws IOException {
+		return Iterables.transform(Minecraft.getMinecraft().getResourceManager().getAllResources(resLoc),
+				new Function<IResource, InputStream>() {
+					@Override
+					public InputStream apply(IResource resource) {
+						return resource.getInputStream();
+					}
+				});
 	}
 
 	@Override

@@ -27,6 +27,8 @@ public abstract class ResourceScanner {
 
 	public abstract InputStream getResource(ResourceLocation resLoc) throws IOException;
 
+	public abstract Iterable<InputStream> getAllResources(ResourceLocation resLoc) throws IOException;
+
 	protected static Set<ResourceLocation> getResourcesFromDir(Path dir, String name) {
 		Path assetsDir = dir.resolve("assets");
 		if (!Files.exists(assetsDir))
