@@ -1,3 +1,11 @@
+2.0.0:
+	* Update to Minecraft 1.9
+	* Add PlayerUtil with helper to handle hands equipment
+	* Add registration of Enchantments
+	* Add registration of {Block,Item}Colors
+	* Rework the ModelBakerBase
+	* Fix child proxies overwriting the main proxy gui handler
+
 1.1.2:
 	* Fix child proxies overwriting the main proxy gui handler
 
