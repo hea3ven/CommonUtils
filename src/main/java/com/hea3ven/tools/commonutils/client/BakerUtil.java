@@ -14,8 +14,8 @@ import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.IModelState;
 import net.minecraftforge.client.model.IRetexturableModel;
+import net.minecraftforge.common.model.IModelState;
 
 public class BakerUtil {
 	public static IBakedModel bake(IModel model) {
@@ -73,7 +73,7 @@ public class BakerUtil {
 		return model.bake(modelState, format, textureGetter);
 	}
 
-	public static IModel retexture(HashMap<String, String> textures, IModel blockModel) {
+	public static IModel retexture(Map<String, String> textures, IModel blockModel) {
 		if (blockModel instanceof IRetexturableModel)
 			return ((IRetexturableModel) blockModel).retexture(ImmutableMap.copyOf(textures));
 //		else if (blockModel instanceof MultiModel) {
