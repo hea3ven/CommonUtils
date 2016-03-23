@@ -204,32 +204,39 @@ public class ProxyModBase {
 	protected void registerColors() {
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void addColors(IColorHandler color, Collection<Block> blocks) {
 		addBlockColors(color, blocks);
 		addItemColors(color, blocks.toArray(new Block[0]));
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void addColors(IColorHandler color, Block... blocks) {
 		addBlockColors(color, blocks);
 		addItemColors(color, blocks);
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void addBlockColors(IBlockColor blockColor, Collection<Block> blocks) {
 		addBlockColors(blockColor, blocks.toArray(new Block[0]));
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void addBlockColors(IBlockColor blockColor, Block... blocks) {
 		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(blockColor, blocks);
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void addItemColors(IItemColor itemColor, Collection<Item> blocks) {
 		addItemColors(itemColor, blocks.toArray(new Item[0]));
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void addItemColors(IItemColor itemColor, Item... blocks) {
 		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColor, blocks);
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void addItemColors(IItemColor itemColor, Block[] blocks) {
 		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColor, blocks);
 	}
@@ -333,6 +340,7 @@ public class ProxyModBase {
 	}
 
 	public void addCommand(ICommand cmd) {
-		ClientCommandHandler.instance.registerCommand(cmd);
+		if(FMLCommonHandler.instance().getSide() == Side.CLIENT)
+			ClientCommandHandler.instance.registerCommand(cmd);
 	}
 }
