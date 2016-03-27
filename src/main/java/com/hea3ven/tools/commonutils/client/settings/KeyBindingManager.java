@@ -62,7 +62,7 @@ public class KeyBindingManager {
 
 	@SubscribeEvent
 	public void onMouseEvent(MouseEvent event) {
-		if (event.dwheel != 0 && Minecraft.getMinecraft().gameSettings.keyBindSneak.isKeyDown()) {
+		if (event.getDwheel() != 0 && Minecraft.getMinecraft().gameSettings.keyBindSneak.isKeyDown()) {
 			for (Entry<Item, Function<MouseEvent, Boolean>> entry : scrollWheelBindings.entrySet()) {
 				HeldEquipment equipment =
 						PlayerUtil.getHeldEquipment(Minecraft.getMinecraft().thePlayer, entry.getKey());

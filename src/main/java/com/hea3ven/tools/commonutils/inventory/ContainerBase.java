@@ -83,7 +83,7 @@ public abstract class ContainerBase extends Container {
 						ItemStack.areItemStackTagsEqual(stack, itemstack)) {
 					if (slot instanceof SlotItemHandler) {
 						ItemStack restStack =
-								((SlotItemHandler) slot).itemHandler.insertItem(slot.getSlotIndex(),
+								((SlotItemHandler) slot).getItemHandler().insertItem(slot.getSlotIndex(),
 										stack.copy(), false);
 						if (restStack == null)
 							stack.stackSize = 0;
@@ -132,7 +132,7 @@ public abstract class ContainerBase extends Container {
 				{
 					if (slot1 instanceof SlotItemHandler) {
 						ItemStack restStack =
-								((SlotItemHandler) slot1).itemHandler.insertItem(slot1.getSlotIndex(),
+								((SlotItemHandler) slot1).getItemHandler().insertItem(slot1.getSlotIndex(),
 										stack.copy(), false);
 						if (restStack == null)
 							stack.stackSize = 0;

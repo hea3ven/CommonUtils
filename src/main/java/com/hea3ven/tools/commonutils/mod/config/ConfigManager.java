@@ -30,7 +30,7 @@ public abstract class ConfigManager {
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-		if (event == null || event.modID.equals(modId)) {
+		if (event == null || event.getModID().equals(modId)) {
 			// Reload config
 			reload(event == null);
 		}

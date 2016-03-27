@@ -170,7 +170,7 @@ public class FileConfigManagerBuilder implements ConfigManagerBuilder {
 						.setRequiresMcRestart(valBuilder.requiresMcRestart)
 						.setRequiresWorldRestart(valBuilder.requiresWorldRestart);
 				category.put(valBuilder.name, prop);
-				prop.comment = valBuilder.desc;
+				prop.setComment(valBuilder.desc);
 				propListeners.put(prop, valBuilder.listener);
 			}
 			for (CategoryConfigManagerBuilder subCat : subCategories) {
