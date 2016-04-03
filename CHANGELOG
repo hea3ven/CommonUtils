@@ -1,3 +1,6 @@
+2.1.0:
+	* Update to Forge 12.16.0.1811
+
 2.0.1:
 	* Add ResourceScanner.getAllResources
 	* Make BakerUtil.retexture take a Map in stead of a HashMap
