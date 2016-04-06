@@ -63,13 +63,13 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 			if (mappings.containsValue(false))
 				throw new IllegalStateException("Extra mapping in the recipe");
 
-			return new ShapedOreRecipe(result, processedIngredients.toArray());
+			return createShapedRecipe(result, processedIngredients.toArray());
 		} else {
 			List<Object> processedIngredients = new ArrayList<>();
 			for (String ingredient : ingredients) {
 				processedIngredients.add(parseIngredient(ingredient));
 			}
-			return new ShapelessOreRecipe(result, processedIngredients.toArray());
+			return createShapelessRecipe(result, processedIngredients.toArray());
 		}
 	}
 
@@ -99,6 +99,14 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 
 	protected boolean isOreDict(String ingredient) {
 		return OreDictionary.doesOreNameExist(ingredient);
+	}
+
+	protected IRecipe createShapedRecipe(ItemStack result, Object[] inputs) {
+		return new ShapedOreRecipe(result, inputs);
+	}
+
+	protected IRecipe createShapelessRecipe(ItemStack result, Object[] inputs) {
+		return new ShapelessOreRecipe(result, inputs);
 	}
 
 	@SuppressWarnings("unchecked")
