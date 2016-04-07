@@ -50,7 +50,7 @@ public abstract class ModInitializerCommon {
 	}
 
 	// TODO: Fix when there is a proper way to register
-	private static int nextId = 100;
+	private static int nextId = 136;
 	private void registerEnchantments(ProxyModBase proxy) {
 		proxy.registerEnchantments();
 		for (InfoEnchantment ench : proxy.enchantments) {

@@ -1,3 +1,8 @@
+2.1.1:
+	* Add PlaceParams helper
+	* Add the ability for subclasses of RecipeBuilder to change the recipe class
+	* Update to Forge 12.16.0.1830
+
 2.1.0:
 	* Update to Forge 12.16.0.1811
 
