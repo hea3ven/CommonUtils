@@ -24,4 +24,14 @@ public class InfoEnchantment {
 	public String getName() {
 		return name;
 	}
+
+	public String getLocalizationName() {
+		String locName = name;
+		int index;
+		while ((index = locName.indexOf('_')) != -1) {
+			locName = locName.substring(0, index) + Character.toUpperCase(locName.charAt(index + 1)) +
+					locName.substring(index + 2);
+		}
+		return locName;
+	}
 }

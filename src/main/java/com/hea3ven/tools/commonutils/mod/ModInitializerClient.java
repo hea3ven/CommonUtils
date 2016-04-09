@@ -53,7 +53,7 @@ public class ModInitializerClient extends ModInitializerCommon {
 			List<String> variants = Lists.newArrayList();
 			for (Object metalObj : blockVar.getVariantProp().getAllowedValues()) {
 				IStringSerializable value = (IStringSerializable) metalObj;
-				String name = block.getDomain() + ":" + value.getName() + blockVar.getVariantSuffix();
+				String name = proxy.getModId() + ":" + value.getName() + blockVar.getVariantSuffix();
 				variants.add(name);
 			}
 			ModelBakery.registerItemVariants(Item.getItemFromBlock(block.getBlock()),
@@ -89,13 +89,13 @@ public class ModInitializerClient extends ModInitializerCommon {
 				InfoBlockVariant blockVar = (InfoBlockVariant) block;
 				for (Object valueObj : blockVar.getVariantProp().getAllowedValues()) {
 					IStringSerializable value = (IStringSerializable) valueObj;
-					String name = block.getDomain() + ":" + value.getName() + blockVar.getVariantSuffix();
+					String name = proxy.getModId() + ":" + value.getName() + blockVar.getVariantSuffix();
 					ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block.getBlock()),
 							blockVar.getMeta(value), new ModelResourceLocation(name, "inventory"));
 				}
 			} else {
 				ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(block.getBlock()),
-						new SimpleItemMeshDefinition(block.getDomain() + ":" + block.getName()));
+						new SimpleItemMeshDefinition(proxy.getModId() + ":" + block.getName()));
 			}
 		}
 		for (InfoItem item : proxy.items) {

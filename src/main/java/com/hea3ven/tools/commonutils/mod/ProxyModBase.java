@@ -125,20 +125,18 @@ public class ProxyModBase {
 	}
 
 	public Block addBlock(Block block, String name) {
-		addBlock(block, name, ItemBlock.class);
+		addBlock(block, name, new ItemBlock(block));
 		return block;
 	}
 
-	public Block addBlock(Block block, String name, Class<? extends ItemBlock> itemCls, Object... itemArgs) {
-		blocks.add(new InfoBlock(block, modId, name, itemCls, itemArgs));
+	public Block addBlock(Block block, String name, ItemBlock item) {
+		blocks.add(new InfoBlock(block, name, item));
 		return block;
 	}
 
-	public Block addBlockVariant(Block block, String name, Class<? extends ItemBlock> itemCls,
-			Object[] itemArgs, IProperty variantProp, String variantSuffix,
-			Map<Object, Integer> variantMetas) {
-		blocks.add(new InfoBlockVariant(block, modId, name, itemCls, itemArgs, variantProp, variantSuffix,
-				variantMetas));
+	public Block addBlockVariant(Block block, String name, ItemBlock item, IProperty variantProp,
+			String variantSuffix, Map<Object, Integer> variantMetas) {
+		blocks.add(new InfoBlockVariant(block, name, item, variantProp, variantSuffix, variantMetas));
 		return block;
 	}
 
@@ -340,7 +338,7 @@ public class ProxyModBase {
 	}
 
 	public void addCommand(ICommand cmd) {
-		if(FMLCommonHandler.instance().getSide() == Side.CLIENT)
+		if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
 			ClientCommandHandler.instance.registerCommand(cmd);
 	}
 }

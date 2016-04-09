@@ -3,10 +3,7 @@ package com.hea3ven.tools.commonutils.mod;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.init.Enchantments;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -49,21 +46,26 @@ public abstract class ModInitializerCommon {
 		}
 	}
 
-	// TODO: Fix when there is a proper way to register
-	private static int nextId = 136;
 	private void registerEnchantments(ProxyModBase proxy) {
 		proxy.registerEnchantments();
 		for (InfoEnchantment ench : proxy.enchantments) {
-			ResourceLocation key = new ResourceLocation(ench.getDomain(), ench.getName());
-			Enchantment.enchantmentRegistry.register(nextId++, key, ench.getEnchantment());
+			ench.getEnchantment().setName(proxy.getModId() + "." + ench.getLocalizationName());
+			ench.getEnchantment().setRegistryName(proxy.getModId() + ":" + ench.getName());
+			GameRegistry.register(ench.getEnchantment());
 		}
 	}
 
 	private void registerBlocks(ProxyModBase proxy) {
 		proxy.registerBlocks();
 		for (InfoBlock block : proxy.blocks) {
-			GameRegistry.registerBlock(block.getBlock(), block.getItemCls(), block.getName(),
-					(block.getItemArgs() != null) ? block.getItemArgs() : new Object[0]);
+			block.getBlock().setUnlocalizedName(proxy.getModId() + "." + block.getLocalizationName());
+			block.getBlock().setRegistryName(proxy.getModId() + ":" + block.getName());
+			GameRegistry.register(block.getBlock());
+			if (block.getItem() != null) {
+				block.getItem().setUnlocalizedName(proxy.getModId() + "." + block.getLocalizationName());
+				block.getItem().setRegistryName(proxy.getModId() + ":" + block.getName());
+				GameRegistry.register(block.getItem());
+			}
 		}
 	}
 
@@ -77,7 +79,9 @@ public abstract class ModInitializerCommon {
 	private void registerItems(ProxyModBase proxy) {
 		proxy.registerItems();
 		for (InfoItem item : proxy.items) {
-			GameRegistry.registerItem(item.getItem(), item.getName());
+			item.getItem().setUnlocalizedName(proxy.getModId() + "." + item.getLocalizationName());
+			item.getItem().setRegistryName(proxy.getModId() + ":" + item.getName());
+			GameRegistry.register(item.getItem());
 		}
 	}
 

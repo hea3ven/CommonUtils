@@ -6,46 +6,34 @@ import net.minecraft.item.ItemBlock;
 class InfoBlock {
 
 	private Block block;
-	private String domain;
 	private String name;
-	private Class<? extends ItemBlock> itemCls;
-	private Object[] itemArgs;
+	private ItemBlock item;
 
-	public InfoBlock(Block block, String domain, String name, Class<? extends ItemBlock> itemCls,
-			Object[] itemArgs) {
+	public InfoBlock(Block block, String name, ItemBlock item) {
 		this.block = block;
-		this.domain = domain;
 		this.name = name;
-		this.itemCls = itemCls;
-		this.itemArgs = itemArgs;
+		this.item= item;
 	}
-
-//	public InfoBlock(Block block, String domain, String name, Class<? extends ItemBlock> itemCls) {
-//		this(block, domain, name, itemCls, null);
-//	}
-
-//	public InfoBlock(Block block, String domain, String name) {
-//		this(block, domain, name, ItemBlock.class);
-//	}
 
 	public Block getBlock() {
 		return block;
-	}
-
-	public String getDomain() {
-		return domain;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public Class<? extends ItemBlock> getItemCls() {
-		return itemCls;
+	public ItemBlock getItem() {
+		return item;
 	}
 
-	public Object[] getItemArgs() {
-		return itemArgs;
+	public String getLocalizationName() {
+		String locName = name;
+		int index;
+		while ((index = locName.indexOf('_')) != -1) {
+			locName = locName.substring(0, index) + Character.toUpperCase(locName.charAt(index + 1)) +
+					locName.substring(index + 2);
+		}
+		return locName;
 	}
-
 }
