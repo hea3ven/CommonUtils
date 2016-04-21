@@ -23,4 +23,11 @@ public class PlaceParams {
 					hitZ - side.getFrontOffsetZ());
 		}
 	}
+
+	public PlaceParams(BlockPos pos, EnumFacing side, Vec3d hit, double depth) {
+		this.pos = pos;
+		this.side = side;
+		this.hit = hit;
+		this.depth = depth;
+	}
 }
