@@ -151,16 +151,14 @@ public class GenericContainer extends ContainerBase {
 			valuesCache = new int[updateHandler.getFieldCount()];
 			for (int i = 0; i < updateHandler.getFieldCount(); i++) {
 				valuesCache[i] = updateHandler.getField(i);
-				for (Object craftingObj : crafters) {
-					ICrafting crafting = (ICrafting) craftingObj;
+				for (ICrafting crafting : listeners) {
 					crafting.sendProgressBarUpdate(this, i, updateHandler.getField(i));
 				}
 			}
 		} else {
 			for (int i = 0; i < valuesCache.length; i++) {
 				if (valuesCache[i] != updateHandler.getField(i)) {
-					for (Object craftingObj : crafters) {
-						ICrafting crafting = (ICrafting) craftingObj;
+					for (ICrafting crafting : listeners) {
 						crafting.sendProgressBarUpdate(this, i, updateHandler.getField(i));
 					}
 					valuesCache[i] = updateHandler.getField(i);
