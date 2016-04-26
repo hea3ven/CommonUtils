@@ -33,4 +33,8 @@ public class ItemStackUtil {
 		entityitem.motionZ = RANDOM.nextGaussian() * 0.05d;
 		world.spawnEntityInWorld(entityitem);
 	}
+
+	public static boolean areItemsCompletlyEqual(ItemStack stackA, ItemStack stackB) {
+		return ItemStack.areItemsEqual(stackA, stackB) && ItemStack.areItemStackTagsEqual(stackA, stackB);
+	}
 }
