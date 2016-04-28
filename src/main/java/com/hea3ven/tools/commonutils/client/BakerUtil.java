@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.IModelUVLock;
 import net.minecraftforge.client.model.IRetexturableModel;
 import net.minecraftforge.common.model.IModelState;
 
@@ -87,5 +88,11 @@ public class BakerUtil {
 //					blockModel.getDefaultState(), parts);
 //		}
 		return blockModel;
+	}
+
+	public static IModel uvlock(IModel model, boolean value) {
+		if (model instanceof IModelUVLock)
+			model = ((IModelUVLock) model).uvlock(value);
+		return model;
 	}
 }
