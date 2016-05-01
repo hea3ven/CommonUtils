@@ -123,6 +123,11 @@ public class FileConfigManagerBuilder implements ConfigManagerBuilder {
 			return this;
 		}
 
+		public CategoryConfigManagerBuilder addValues(Consumer<CategoryConfigManagerBuilder> builder) {
+			builder.accept(this);
+			return this;
+		}
+
 		public CategoryConfigManagerBuilder addSubCategory(String name) {
 			return new CategoryConfigManagerBuilder(this, name);
 		}
