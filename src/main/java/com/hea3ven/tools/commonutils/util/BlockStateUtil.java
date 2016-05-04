@@ -32,7 +32,7 @@ public class BlockStateUtil {
 		HashCodeBuilder hash = new HashCodeBuilder();
 		for (Comparable value : state.getProperties().values())
 			hash.append(value);
-		//noinspection OptionalUsedAsFieldOrParameterType
+		//noinspection OptionalUsedAsFieldOrParameterType,Guava
 		for (Optional<?> value : state.getUnlistedProperties().values())
 			hash.append(value);
 		return hash.build();

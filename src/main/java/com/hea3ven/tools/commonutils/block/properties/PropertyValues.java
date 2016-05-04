@@ -17,6 +17,7 @@ public class PropertyValues<T extends Comparable<T> & IStringSerializable> exten
 	private Collection<T> values;
 	private final Map<String, T> nameToValue;
 
+	@SafeVarargs
 	public static <T extends Comparable<T> & IStringSerializable> PropertyValues<T> create(String name,
 			Class<T> valueClass, T... values) {
 		return new PropertyValues<>(name, valueClass, Lists.newArrayList(values));
@@ -37,6 +38,8 @@ public class PropertyValues<T extends Comparable<T> & IStringSerializable> exten
 		nameToValue = builder.build();
 	}
 
+	@SuppressWarnings("Guava")
+	@Override
 	@SideOnly(Side.CLIENT)
 	public Optional<T> parseValue(String value)
 	{

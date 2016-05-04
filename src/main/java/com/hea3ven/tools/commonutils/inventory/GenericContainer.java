@@ -92,14 +92,11 @@ public class GenericContainer extends ContainerBase {
 		for (int i = 0; i < 9 * 4; i++)
 			slotsTypes.add(SlotType.PLAYER);
 		addInventoryGrid(playerInv, 9, 8, 84, 9, 3);
-		addInventoryGrid(0, 8, 142, 9, 1, new SlotFactory() {
-			@Override
-			public Slot create(int slot, int x, int y) {
-				if (lockedSlots != null && lockedSlots.contains(slot))
-					return new SlotLocked(playerInv, slot, x, y);
-				else
-					return new Slot(playerInv, slot, x, y);
-			}
+		addInventoryGrid(0, 8, 142, 9, 1, (slot, x, y) -> {
+			if (lockedSlots != null && lockedSlots.contains(slot))
+				return new SlotLocked(playerInv, slot, x, y);
+			else
+				return new Slot(playerInv, slot, x, y);
 		});
 		return this;
 	}

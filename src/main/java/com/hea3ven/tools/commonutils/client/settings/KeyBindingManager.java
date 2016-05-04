@@ -30,14 +30,11 @@ public class KeyBindingManager {
 
 	public void addItemKeyBinding(final Item item, String description, int keyCode, String category,
 			final Consumer<KeyInputEvent> callback) {
-		addKeyBinding(description, keyCode, category, new Consumer<KeyInputEvent>() {
-			@Override
-			public void accept(KeyInputEvent keyInputEvent) {
-				HeldEquipment equipment =
-						PlayerUtil.getHeldEquipment(Minecraft.getMinecraft().thePlayer, item);
-				if (equipment != null) {
-					callback.accept(keyInputEvent);
-				}
+		addKeyBinding(description, keyCode, category, keyInputEvent -> {
+			HeldEquipment equipment =
+					PlayerUtil.getHeldEquipment(Minecraft.getMinecraft().thePlayer, item);
+			if (equipment != null) {
+				callback.accept(keyInputEvent);
 			}
 		});
 	}

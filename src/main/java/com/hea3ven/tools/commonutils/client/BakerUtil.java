@@ -2,7 +2,6 @@ package com.hea3ven.tools.commonutils.client;
 
 import java.util.Map;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.Minecraft;
@@ -31,15 +30,9 @@ public class BakerUtil {
 	}
 
 	public static IBakedModel bake(IModel model, IModelState modelState, VertexFormat format) {
-		Function<ResourceLocation, TextureAtlasSprite> textureGetter =
-				new Function<ResourceLocation, TextureAtlasSprite>() {
-					public TextureAtlasSprite apply(ResourceLocation location) {
-						return Minecraft.getMinecraft()
-								.getTextureMapBlocks()
-								.getAtlasSprite(location.toString());
-					}
-				};
-		return model.bake(modelState, format, textureGetter);
+		return model.bake(modelState, format, location -> Minecraft.getMinecraft()
+				.getTextureMapBlocks()
+				.getAtlasSprite(location.toString()));
 	}
 
 	public static IBakedModel bake(IModel model, Map<ResourceLocation, TextureAtlasSprite> textures) {
@@ -64,13 +57,7 @@ public class BakerUtil {
 		if (!textures.containsKey(new ResourceLocation("builtin/white")))
 			textures.put(new ResourceLocation("builtin/white"),
 					Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite());
-		Function<ResourceLocation, TextureAtlasSprite> textureGetter =
-				new Function<ResourceLocation, TextureAtlasSprite>() {
-					public TextureAtlasSprite apply(ResourceLocation location) {
-						return textures.get(location);
-					}
-				};
-		return model.bake(modelState, format, textureGetter);
+		return model.bake(modelState, format, textures::get);
 	}
 
 	public static IModel retexture(Map<String, String> textures, IModel blockModel) {

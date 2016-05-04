@@ -1,10 +1,7 @@
 package com.hea3ven.tools.commonutils.mod;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -57,13 +54,7 @@ public class ModInitializerClient extends ModInitializerCommon {
 				variants.add(name);
 			}
 			ModelBakery.registerItemVariants(Item.getItemFromBlock(block.getBlock()),
-					Iterables.toArray(Iterables.transform(variants, new Function<String, ResourceLocation>() {
-						@Nullable
-						@Override
-						public ResourceLocation apply(String input) {
-							return new ResourceLocation(input);
-						}
-					}), ResourceLocation.class));
+					variants.stream().map(ResourceLocation::new).toArray(ResourceLocation[]::new));
 
 			ModelLoader.setCustomStateMapper(block.getBlock(),
 					(new StateMap.Builder()).withName(blockVar.getVariantProp())
