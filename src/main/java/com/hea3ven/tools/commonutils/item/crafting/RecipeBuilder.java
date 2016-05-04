@@ -1,5 +1,6 @@
 package com.hea3ven.tools.commonutils.item.crafting;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,16 +30,18 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 		if (ingredients == null)
 			throw new IllegalStateException("No ingredients were defined");
 
-		if (outputIngredient == null && output == null) {
-			StringBuilder inputs = new StringBuilder();
-			for (String ingredient : ingredients) {
-				if (inputs.length() != 0)
-					inputs.append(", ");
-				inputs.append(ingredient);
-			}
-			throw new IllegalStateException("No output defined for recipe with inputs " + inputs.toString());
-		}
-		ItemStack result = (outputIngredient != null) ? parseStack(outputIngredient) : output.copy();
+		if (outputIngredient == null && output == null)
+			throw new IllegalStateException(
+					"No output defined for recipe with inputs " + getInputsAsString());
+		ItemStack result;
+		if (outputIngredient != null) {
+			result = parseStack(outputIngredient);
+			if (result == null)
+				throw new IllegalStateException(
+						"Could not parse output '" + outputIngredient + "' for recipe with inputs " +
+								getInputsAsString());
+		} else
+			result = output.copy();
 		if (result.stackSize == 1)
 			result.stackSize = outputSize;
 		if (shaped) {
@@ -64,7 +67,7 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 					if (c == ' ')
 						continue;
 					if (!mappings.containsKey(c))
-						throw new IllegalStateException("Missing maping in the recipe");
+						throw new IllegalStateException("Missing mapping in the recipe");
 					mappings.put(c, true);
 				}
 				processedIngredients.add(0, ingredients[i]);
@@ -80,6 +83,17 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 			}
 			return createShapelessRecipe(result, processedIngredients.toArray());
 		}
+	}
+
+	@Nonnull
+	private String getInputsAsString() {
+		StringBuilder inputs = new StringBuilder();
+		for (String ingredient : ingredients) {
+			if (inputs.length() != 0)
+				inputs.append(", ");
+			inputs.append(ingredient);
+		}
+		return inputs.toString();
 	}
 
 	protected Object parseIngredient(String ingredient) {

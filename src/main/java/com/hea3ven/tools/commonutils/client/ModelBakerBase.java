@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.util.ResourceLocation;
 
@@ -24,11 +23,11 @@ public class ModelBakerBase {
 	private DefaultStateMapper stateMap = new DefaultStateMapper();
 
 	@SubscribeEvent
-	public void onTextureStichPreEvent(TextureStitchEvent.Pre event) {
+	public void onTextureStitchPreEvent(TextureStitchEvent.Pre event) {
 	}
 
 	@SubscribeEvent
-	public void onTextureStichPostEvent(TextureStitchEvent.Post event) {
+	public void onTextureStitchPostEvent(TextureStitchEvent.Post event) {
 	}
 
 	@SubscribeEvent

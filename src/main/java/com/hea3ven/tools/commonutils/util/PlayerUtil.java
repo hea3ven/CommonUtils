@@ -25,7 +25,7 @@ public class PlayerUtil {
 		@Nonnull
 		public ItemStack stack;
 
-		public HeldEquipment(EntityPlayer player, EnumHand hand, ItemStack stack) {
+		public HeldEquipment(@Nonnull EntityPlayer player, @Nonnull EnumHand hand, @Nonnull ItemStack stack) {
 			this.player = player;
 			this.hand = hand;
 			this.stack = stack;

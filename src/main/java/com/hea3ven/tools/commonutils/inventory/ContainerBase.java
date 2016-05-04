@@ -125,9 +125,9 @@ public abstract class ContainerBase extends Container {
 
 			while (!reverseDirection && i < endIndex || reverseDirection && i >= startIndex) {
 				Slot slot1 = this.inventorySlots.get(i);
-				ItemStack itemstack1 = slot1.getStack();
+				ItemStack itemStack1 = slot1.getStack();
 
-				if (itemstack1 == null &&
+				if (itemStack1 == null &&
 						slot1.isItemValid(stack)) // Forge: Make sure to respect isItemValid in the slot.
 				{
 					if (slot1 instanceof SlotItemHandler) {

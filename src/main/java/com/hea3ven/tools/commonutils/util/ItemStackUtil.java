@@ -34,7 +34,7 @@ public class ItemStackUtil {
 		world.spawnEntityInWorld(entityitem);
 	}
 
-	public static boolean areItemsCompletlyEqual(ItemStack stackA, ItemStack stackB) {
+	public static boolean areItemsCompletelyEqual(ItemStack stackA, ItemStack stackB) {
 		return ItemStack.areItemsEqual(stackA, stackB) && ItemStack.areItemStackTagsEqual(stackA, stackB);
 	}
 }

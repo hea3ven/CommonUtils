@@ -40,7 +40,7 @@ public class PropertyValues<T extends Comparable<T> & IStringSerializable> exten
 	@SideOnly(Side.CLIENT)
 	public Optional<T> parseValue(String value)
 	{
-		return Optional.<T>fromNullable(this.nameToValue.get(value));
+		return Optional.fromNullable(this.nameToValue.get(value));
 	}
 
 	@Override

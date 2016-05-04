@@ -60,7 +60,7 @@ public class ModInitializerClient extends ModInitializerCommon {
 					Iterables.toArray(Iterables.transform(variants, new Function<String, ResourceLocation>() {
 						@Nullable
 						@Override
-						public ResourceLocation apply(@Nullable String input) {
+						public ResourceLocation apply(String input) {
 							return new ResourceLocation(input);
 						}
 					}), ResourceLocation.class));

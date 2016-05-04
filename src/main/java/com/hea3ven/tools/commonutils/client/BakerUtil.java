@@ -1,6 +1,5 @@
 package com.hea3ven.tools.commonutils.client;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.base.Function;

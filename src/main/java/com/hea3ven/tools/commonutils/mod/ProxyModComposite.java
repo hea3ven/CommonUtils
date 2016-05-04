@@ -31,11 +31,11 @@ public class ProxyModComposite extends ProxyModBase {
 			Throwables.propagate(e);
 			return;
 		}
-		ProxyModModule child = null;
+		ProxyModModule child;
 		try {
 			child = cls.getConstructor().newInstance();
 		} catch (Exception e) {
-			Throwables.propagate(e);
+			throw new RuntimeException("Could not build the module " + name, e);
 		}
 		children.put(name, child);
 		child.setParent(this);
