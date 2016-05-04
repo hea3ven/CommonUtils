@@ -29,6 +29,15 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 		if (ingredients == null)
 			throw new IllegalStateException("No ingredients were defined");
 
+		if (outputIngredient == null && output == null) {
+			StringBuilder inputs = new StringBuilder();
+			for (String ingredient : ingredients) {
+				if (inputs.length() != 0)
+					inputs.append(", ");
+				inputs.append(ingredient);
+			}
+			throw new IllegalStateException("No output defined for recipe with inputs " + inputs.toString());
+		}
 		ItemStack result = (outputIngredient != null) ? parseStack(outputIngredient) : output.copy();
 		if (result.stackSize == 1)
 			result.stackSize = outputSize;
