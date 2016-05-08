@@ -1,13 +1,13 @@
 package com.hea3ven.tools.commonutils.inventory;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotOutput extends Slot {
+import net.minecraftforge.items.IItemHandler;
 
-	public SlotOutput(IInventory inv, int slot, int xPos, int yPos) {
-		super(inv, slot, xPos, yPos);
+public class SlotOutput extends SlotItemHandlerBase {
+
+	public SlotOutput(IItemHandler inv, int index, int xPosition, int yPosition) {
+		super(inv, index, xPosition, yPosition);
 	}
 
 	@Override

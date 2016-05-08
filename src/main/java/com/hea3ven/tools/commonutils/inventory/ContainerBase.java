@@ -1,12 +1,12 @@
 package com.hea3ven.tools.commonutils.inventory;
 
-import java.lang.reflect.Constructor;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.google.common.base.Throwables;
-import org.apache.commons.lang3.reflect.ConstructorUtils;
-
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -15,147 +15,136 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public abstract class ContainerBase extends Container {
 
-	public void addInventoryGrid(IInventory inv, int slotOff, int xOff, int yOff, int xSize, int ySize) {
-		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, Slot.class, inv);
+	public void addSlots(IItemHandler inv, int slotOff, int xOff, int yOff, int xSize, int ySize) {
+		addSlots(xOff, yOff, xSize, ySize,
+				(slot, x, y) -> new SlotItemHandler(inv, slotOff + slot, x, y));
 	}
 
-	public void addInventoryGrid(IItemHandler inv, int slotOff, int xOff, int yOff, int xSize, int ySize) {
-		addInventoryGrid(slotOff, xOff, yOff, xSize, ySize, SlotItemHandler.class, inv);
-	}
-
-	public void addInventoryGrid(int slotOff, int xOff, int yOff, int xSize, int ySize,
-			Class<? extends Slot> cls, Object... args) {
-		try {
-			Class<?>[] argsTypes = new Class[args.length + 3];
-			int i = 0;
-			for (; i < args.length; i++)
-				argsTypes[i] = args[i].getClass();
-			argsTypes[i++] = Integer.TYPE;
-			argsTypes[i++] = Integer.TYPE;
-			argsTypes[i] = Integer.TYPE;
-
-			Constructor<? extends Slot> ctor =
-					ConstructorUtils.getMatchingAccessibleConstructor(cls, argsTypes);
-			for (int y = 0; y < ySize; ++y) {
-				for (int x = 0; x < xSize; ++x) {
-					Object[] objArgs = new Object[args.length + 3];
-					for (i = 0; i < args.length; i++)
-						objArgs[i] = args[i];
-					objArgs[i++] = slotOff + x + y * xSize;
-					objArgs[i++] = xOff + x * 18;
-					objArgs[i] = yOff + y * 18;
-					this.addSlotToContainer(ctor.newInstance(objArgs));
-				}
-			}
-		} catch (Exception e) {
-			Throwables.propagate(e);
-		}
-	}
-
-	public void addInventoryGrid(int slotOff, int xOff, int yOff, int xSize, int ySize,
-			SlotFactory slotFactory) {
+	public void addSlots(int xOff, int yOff, int xSize, int ySize, SlotSupplier slotSupplier) {
 		for (int y = 0; y < ySize; ++y) {
 			for (int x = 0; x < xSize; ++x) {
-				this.addSlotToContainer(
-						slotFactory.create(slotOff + x + y * xSize, xOff + x * 18, yOff + y * 18));
+				this.addSlotToContainer(slotSupplier.get(x + y * xSize, xOff + x * 18, yOff + y * 18));
 			}
 		}
 	}
 
 	@Override
-	protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex,
-			boolean reverseDirection) {
-		boolean flag = false;
-		int i = startIndex;
+	public ItemStack slotClick(int slotId, int clickedButton, ClickType clickTypeIn, EntityPlayer player) {
+		ItemStack itemstack = null;
+		InventoryPlayer inventoryplayer = player.inventory;
 
-		if (reverseDirection) {
-			i = endIndex - 1;
+		if (clickTypeIn == ClickType.QUICK_CRAFT) {
+			return super.slotClick(slotId, clickedButton, clickTypeIn, player);
+		} else if ((clickTypeIn == ClickType.PICKUP || clickTypeIn == ClickType.QUICK_MOVE) &&
+				(clickedButton == 0 || clickedButton == 1)) {
+			if (slotId == -999) {
+				if (inventoryplayer.getItemStack() != null) {
+					if (clickedButton == 0) {
+						player.dropItem(inventoryplayer.getItemStack(), true);
+						inventoryplayer.setItemStack(null);
+					}
+
+					if (clickedButton == 1) {
+						player.dropItem(inventoryplayer.getItemStack().splitStack(1), true);
+
+						if (inventoryplayer.getItemStack().stackSize == 0) {
+							inventoryplayer.setItemStack(null);
+						}
+					}
+				}
+			} else if (clickTypeIn == ClickType.QUICK_MOVE) {
+				IAdvancedSlot slot = getAdvancedSlot(slotId);
+				if (slot != null)
+					itemstack = slot.onQuickMove(this, player, clickedButton);
+			} else {
+				IAdvancedSlot slot = getAdvancedSlot(slotId);
+				if (slot != null)
+					itemstack = slot.onPickUp(player, clickedButton);
+			}
+		} else if (clickTypeIn == ClickType.SWAP && clickedButton >= 0 && clickedButton < 9) {
+			IAdvancedSlot slot = getAdvancedSlot(slotId);
+			if (slot != null)
+				slot.onSwapPlayerStack(player, clickedButton);
+		} else if (clickTypeIn == ClickType.CLONE) {
+			IAdvancedSlot slot = getAdvancedSlot(slotId);
+			if (slot != null)
+				slot.onClone(player);
+		} else if (clickTypeIn == ClickType.THROW) {
+			IAdvancedSlot slot = getAdvancedSlot(slotId);
+			if (slot != null)
+				slot.onThrow(player, clickedButton);
+		} else if (clickTypeIn == ClickType.PICKUP_ALL && slotId >= 0) {
+			IAdvancedSlot slot = getAdvancedSlot(slotId);
+			if (slot != null)
+				slot.onPickUpAll(this, player, clickedButton);
 		}
 
-		if (stack.isStackable()) {
-			while (stack.stackSize > 0 &&
-					(!reverseDirection && i < endIndex || reverseDirection && i >= startIndex)) {
-				Slot slot = this.inventorySlots.get(i);
-				ItemStack itemstack = slot.getStack();
+		return itemstack;
+	}
 
-				if (itemstack != null && itemstack.getItem() == stack.getItem() &&
-						(!stack.getHasSubtypes() || stack.getMetadata() == itemstack.getMetadata()) &&
-						ItemStack.areItemStackTagsEqual(stack, itemstack)) {
-					if (slot instanceof SlotItemHandler) {
-						ItemStack restStack =
-								((SlotItemHandler) slot).getItemHandler().insertItem(slot.getSlotIndex(),
-										stack.copy(), false);
-						if (restStack == null)
-							stack.stackSize = 0;
-						else
-							stack.stackSize = restStack.stackSize;
-						flag = true;
-						break;
-					} else {
-						int j = itemstack.stackSize + stack.stackSize;
+	@Nullable
+	public IAdvancedSlot getAdvancedSlot(int slotId) {
+		if (slotId < 0)
+			return null;
 
-						if (j <= stack.getMaxStackSize()) {
-							stack.stackSize = 0;
-							itemstack.stackSize = j;
-							slot.onSlotChanged();
-							flag = true;
-						} else if (itemstack.stackSize < stack.getMaxStackSize()) {
-							stack.stackSize -= stack.getMaxStackSize() - itemstack.stackSize;
-							itemstack.stackSize = stack.getMaxStackSize();
-							slot.onSlotChanged();
+		Slot slot = getSlot(slotId);
+		return getAdvancedSlot(slot);
+	}
+
+	@Nonnull
+	private IAdvancedSlot getAdvancedSlot(Slot slot) {
+		return (slot instanceof IAdvancedSlot) ? (IAdvancedSlot) slot : new AdvancedSlotWrapper(slot);
+	}
+
+	public void retrySlotClick(int slotId, int clickedButton, boolean mode, EntityPlayer playerIn) {
+		super.retrySlotClick(slotId, clickedButton, mode, playerIn);
+	}
+
+	@Override
+	public boolean canDragIntoSlot(Slot slot) {
+		return getAdvancedSlot(slot).canDragIntoSlot();
+	}
+
+	protected boolean mergeSlot(IAdvancedSlot slot, int startIndex, int endIndex, boolean reverseDirection) {
+		boolean flag = false;
+		int i = startIndex;
+		int step = 1;
+		int end = endIndex;
+
+		for (int attempt = 0; attempt < 2; attempt++) {
+			if (reverseDirection) {
+				i = endIndex - 1;
+				step = -1;
+				end = startIndex - 1;
+			}
+
+			while (slot.canTransferFromSlot() && i != end) {
+				IAdvancedSlot targetSlot = getAdvancedSlot(i);
+				if (targetSlot != null) {
+					if ((attempt == 0 && targetSlot.getStack() != null) ||
+							(attempt == 1 && targetSlot.getStack() == null)) {
+						if (targetSlot.transferFrom(slot)) {
 							flag = true;
 						}
 					}
 				}
 
-				if (reverseDirection) {
-					--i;
-				} else {
-					++i;
-				}
+				i += step;
 			}
 		}
 
-		if (stack.stackSize > 0) {
-			if (reverseDirection) {
-				i = endIndex - 1;
-			} else {
-				i = startIndex;
-			}
+//		if (reverseDirection) {
+//			i = endIndex - 1;
+//			step = -1;
+//			end = startIndex - 1;
+//		}
+//		while (slot.canTransferFromSlot() && i != end) {
+//			IAdvancedSlot targetSlot = getAdvancedSlot(i);
+//			if (targetSlot != null && targetSlot.getStack() == null && targetSlot.transferFrom(slot))
+//				flag = true;
 
-			while (!reverseDirection && i < endIndex || reverseDirection && i >= startIndex) {
-				Slot slot1 = this.inventorySlots.get(i);
-				ItemStack itemStack1 = slot1.getStack();
-
-				if (itemStack1 == null &&
-						slot1.isItemValid(stack)) // Forge: Make sure to respect isItemValid in the slot.
-				{
-					if (slot1 instanceof SlotItemHandler) {
-						ItemStack restStack =
-								((SlotItemHandler) slot1).getItemHandler().insertItem(slot1.getSlotIndex(),
-										stack.copy(), false);
-						if (restStack == null)
-							stack.stackSize = 0;
-						else
-							stack.stackSize = restStack.stackSize;
-						flag = true;
-						break;
-					} else {
-						slot1.putStack(stack.copy());
-						slot1.onSlotChanged();
-						stack.stackSize = 0;
-						flag = true;
-						break;
-					}
-				}
-
-				if (reverseDirection) {
-					--i;
-				} else {
-					++i;
-				}
-			}
-		}
+//			i += step;
+//		}
 
 		return flag;
 	}

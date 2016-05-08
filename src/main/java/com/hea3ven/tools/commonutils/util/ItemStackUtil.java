@@ -37,4 +37,10 @@ public class ItemStackUtil {
 	public static boolean areItemsCompletelyEqual(ItemStack stackA, ItemStack stackB) {
 		return ItemStack.areItemsEqual(stackA, stackB) && ItemStack.areItemStackTagsEqual(stackA, stackB);
 	}
+
+	public static boolean areStacksCombinable(ItemStack stackA, ItemStack stackB) {
+		return stackA.getItem() == stackB.getItem() &&
+				(!stackA.getHasSubtypes() || stackA.getMetadata() == stackB.getMetadata()) &&
+				ItemStack.areItemStackTagsEqual(stackA, stackB);
+	}
 }

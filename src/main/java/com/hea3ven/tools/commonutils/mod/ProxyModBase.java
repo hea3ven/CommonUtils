@@ -64,7 +64,7 @@ public class ProxyModBase {
 
 	ConfigManager cfgMgr;
 
-	private GenericGuiHandler guiHandler = new GenericGuiHandler();
+	protected GenericGuiHandler guiHandler = new GenericGuiHandler();
 	private IGuiHandler overrideGuiHandler;
 
 	ConfigManagerBuilder cfgMgrBuilder;
