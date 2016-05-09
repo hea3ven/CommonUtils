@@ -27,8 +27,7 @@ public class ItemBlockUtil {
 				world.playSound((EntityPlayer) placer, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS,
 						(soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 			}
-			if (stack != null &&
-					!(!(placer instanceof EntityPlayer) || !((EntityPlayer) placer).isCreative()))
+			if (stack != null && (!(placer instanceof EntityPlayer) || !((EntityPlayer) placer).isCreative()))
 				--stack.stackSize;
 			return true;
 		}
