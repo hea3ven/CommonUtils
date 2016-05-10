@@ -1,3 +1,13 @@
+2.2.0:
+	* Add ItemBlockUtil.placeBlock
+	* Add uvlock to BakerUtil
+	* Add a way to dynamicly add config values
+	* Update to the new registry
+	* Update to Forge 12.16.0.1894
+	* Update to java 8
+	* Rework the inventory handling system
+	* Fix the error message in RecipeBuilder when no output is defined
+
 2.1.1:
 	* Add PlaceParams helper
 	* Add the ability for subclasses of RecipeBuilder to change the recipe class

@@ -21,13 +21,13 @@ apply plugin: 'maven'
 
 import org.ajoberstar.grgit.Grgit
 
-version = '2.1.1'
+version = '2.2.0'
 group = 'com.hea3ven.tools.commonutils'
 archivesBaseName = 'h3nt-commonutils'
 
 minecraft {
-	version = '12.16.0.1860-1.9'
-	mappings = "snapshot_20160419"
+	version = '12.16.1.1894'
+	mappings = "snapshot_20160508"
 	runDir = "run"
 }
 
@@ -42,18 +42,7 @@ dependencies {
 	testCompile 'junit:junit:4.12'
 }
 
-task deobfJar(type: Jar) {
-	from(sourceSets.main.output) {
-		classifier = "deobf"
-	}
-}
-
-artifacts {
-	archives deobfJar
-}
-
 uploadArchives {
-	// dependsOn 'reobf'
 	repositories {
 		mavenDeployer {
 			repository(url: project.hasProperty('hea3venMvnUrl') ? project.hea3venMvnUrl : '')
@@ -61,7 +50,7 @@ uploadArchives {
 	}
 }
 
-def last_release_commit = '077b37dceb8d12bd2075a5e07b153fd352f326b0'
+def last_release_commit = '87cd7b49bc61201347b2c97d67cb9585aff91312'
 task updateChangelog << {
 	def changelogFile = new File(projectDir, "CHANGELOG")
 	def changelog = changelogFile.text
