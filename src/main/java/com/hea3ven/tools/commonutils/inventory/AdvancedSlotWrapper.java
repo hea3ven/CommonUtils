@@ -275,18 +275,18 @@ public class AdvancedSlotWrapper implements IAdvancedSlot {
 
 	@Override
 	public boolean transferFrom(IAdvancedSlot srcSlot) {
-		ItemStack srcStack = srcSlot.getStack();
+		ItemStack srcStack = srcSlot.getImmutableStack();
 		ItemStack stack = slot.getStack();
 		if (stack != null) {
 			if (srcStack != null && ItemStackUtil.areStacksCombinable(stack, srcStack)) {
-				int j = srcSlot.decrStackSize(stack.getMaxStackSize() - stack.stackSize).stackSize;
+				int j = srcSlot.extract(stack.getMaxStackSize() - stack.stackSize).stackSize;
 				stack.stackSize += j;
 				return true;
 			}
 		} else {
 			if (slot.isItemValid(srcStack)) // Forge: Make sure to respect isItemValid in the slot.
 			{
-				slot.putStack(srcSlot.decrStackSize(srcStack.getMaxStackSize()));
+				slot.putStack(srcSlot.extract(srcStack.getMaxStackSize()));
 				slot.onSlotChanged();
 				return true;
 			}
@@ -295,13 +295,13 @@ public class AdvancedSlotWrapper implements IAdvancedSlot {
 	}
 
 	@Override
-	public ItemStack getStack() {
+	public ItemStack getImmutableStack() {
 		return slot.getStack();
 	}
 
 	@Override
-	public ItemStack decrStackSize(int size) {
-		ItemStack stack = getStack().splitStack(size);
+	public ItemStack extract(int size) {
+		ItemStack stack = getImmutableStack().splitStack(size);
 		if (slot.getStack().stackSize <= 0)
 			slot.putStack(null);
 		else

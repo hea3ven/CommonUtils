@@ -121,8 +121,8 @@ public abstract class ContainerBase extends Container {
 			while (slot.canTransferFromSlot() && i != end) {
 				IAdvancedSlot targetSlot = getAdvancedSlot(i);
 				if (targetSlot != null) {
-					if ((attempt == 0 && targetSlot.getStack() != null) ||
-							(attempt == 1 && targetSlot.getStack() == null)) {
+					if ((attempt == 0 && targetSlot.getImmutableStack() != null) ||
+							(attempt == 1 && targetSlot.getImmutableStack() == null)) {
 						if (targetSlot.transferFrom(slot)) {
 							flag = true;
 						}
@@ -132,20 +132,6 @@ public abstract class ContainerBase extends Container {
 				i += step;
 			}
 		}
-
-//		if (reverseDirection) {
-//			i = endIndex - 1;
-//			step = -1;
-//			end = startIndex - 1;
-//		}
-//		while (slot.canTransferFromSlot() && i != end) {
-//			IAdvancedSlot targetSlot = getAdvancedSlot(i);
-//			if (targetSlot != null && targetSlot.getStack() == null && targetSlot.transferFrom(slot))
-//				flag = true;
-
-//			i += step;
-//		}
-
 		return flag;
 	}
 }

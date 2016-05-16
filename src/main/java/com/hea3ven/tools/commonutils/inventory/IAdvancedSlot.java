@@ -27,7 +27,7 @@ public interface IAdvancedSlot {
 	 *
 	 * @return the stack in the slot.
 	 */
-	ItemStack getStack();
+	ItemStack getImmutableStack();
 
-	ItemStack decrStackSize(int size);
+	ItemStack extract(int size);
 }
