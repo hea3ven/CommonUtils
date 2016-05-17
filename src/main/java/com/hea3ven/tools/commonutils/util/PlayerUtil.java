@@ -12,7 +12,7 @@ public class PlayerUtil {
 		for (EnumHand hand : EnumHand.values()) {
 			ItemStack stack = player.getHeldItem(hand);
 			if (stack != null && stack.getItem() == item)
-				return new HeldEquipment(player, hand, stack);
+				return new HeldEquipment(player, hand);
 		}
 		return null;
 	}
@@ -22,20 +22,13 @@ public class PlayerUtil {
 		public EntityPlayer player;
 		@Nonnull
 		public EnumHand hand;
-		@Nonnull
-		public ItemStack stack;
 
-		public HeldEquipment(@Nonnull EntityPlayer player, @Nonnull EnumHand hand, @Nonnull ItemStack stack) {
+		public HeldEquipment(@Nonnull EntityPlayer player, @Nonnull EnumHand hand) {
 			this.player = player;
 			this.hand = hand;
-			this.stack = stack;
 		}
 
-		public void updatePlayer() {
-			player.setHeldItem(hand, stack);
-		}
-
-		public ItemStack getCurrent() {
+		public ItemStack getStack() {
 			return player.getHeldItem(hand);
 		}
 	}
