@@ -1,3 +1,7 @@
+2.2.1:
+	* Fix obfuscated name clash between Slot and IAdvancedSlot
+	* Fix HeldEquipment desyncing from the player by not holding a reference to the held stack any more
+
 2.2.0:
 	* Add ItemBlockUtil.placeBlock
 	* Add uvlock to BakerUtil
