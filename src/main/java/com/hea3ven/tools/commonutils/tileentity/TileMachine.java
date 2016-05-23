@@ -20,10 +20,13 @@ public class TileMachine extends TileEntity {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		compound = super.writeToNBT(compound);
+
 		if (this.hasCustomName())
 			compound.setString("CustomName", this.customName);
+
+		return compound;
 	}
 
 	@Override

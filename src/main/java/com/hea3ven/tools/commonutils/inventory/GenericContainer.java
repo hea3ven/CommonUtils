@@ -4,7 +4,7 @@ import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.items.IItemHandler;
@@ -51,7 +51,8 @@ public class GenericContainer extends ContainerBase {
 
 	public GenericContainer addPlayerSlots(final InventoryPlayer playerInv, final Set<Integer> lockedSlots) {
 		playerSlotsStart = inventorySlots.size();
-		CombinedInvWrapper playerItemHandler = new CombinedInvWrapper(new PlayerMainInvWrapper(playerInv), new PlayerOffhandInvWrapper(playerInv));
+		CombinedInvWrapper playerItemHandler = new CombinedInvWrapper(new PlayerMainInvWrapper(playerInv),
+				new PlayerOffhandInvWrapper(playerInv));
 		addSlots(playerItemHandler, 9, 8, 84, 9, 3);
 		addSlots(8, 142, 9, 1, (slot, x, y) -> {
 			if (lockedSlots != null && lockedSlots.contains(slot))
@@ -90,14 +91,14 @@ public class GenericContainer extends ContainerBase {
 			valuesCache = new int[updateHandler.getFieldCount()];
 			for (int i = 0; i < updateHandler.getFieldCount(); i++) {
 				valuesCache[i] = updateHandler.getField(i);
-				for (ICrafting crafting : listeners) {
+				for (IContainerListener crafting : listeners) {
 					crafting.sendProgressBarUpdate(this, i, updateHandler.getField(i));
 				}
 			}
 		} else {
 			for (int i = 0; i < valuesCache.length; i++) {
 				if (valuesCache[i] != updateHandler.getField(i)) {
-					for (ICrafting crafting : listeners) {
+					for (IContainerListener crafting : listeners) {
 						crafting.sendProgressBarUpdate(this, i, updateHandler.getField(i));
 					}
 					valuesCache[i] = updateHandler.getField(i);

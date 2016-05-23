@@ -20,7 +20,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.*;
 import net.minecraft.client.resources.data.IMetadataSection;
-import net.minecraft.client.resources.data.IMetadataSerializer;
+import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -50,7 +50,7 @@ public class ResourceScannerClient extends ResourceScanner {
 						"defaultResourcePacks");
 		resPacks.add(new FolderResourcePack(dir.toFile()) {
 			@Override
-			public <T extends IMetadataSection> T getPackMetadata(IMetadataSerializer serializer,
+			public <T extends IMetadataSection> T getPackMetadata(MetadataSerializer serializer,
 					String section) throws IOException {
 				return null;
 			}
@@ -62,7 +62,7 @@ public class ResourceScannerClient extends ResourceScanner {
 						resPacks.add(new FileResourcePack(subPath.toFile()) {
 							@Override
 							public <T extends IMetadataSection> T getPackMetadata(
-									IMetadataSerializer serializer, String section) throws IOException {
+									MetadataSerializer serializer, String section) throws IOException {
 								return null;
 							}
 						});
