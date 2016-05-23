@@ -50,7 +50,7 @@ uploadArchives {
 	}
 }
 
-def last_release_commit = 'c1c7010a3d5de8fe7ef01aa6a1e8f07ea1d85413'
+def last_release_commit = '43597160e11313a27ca01a29e109a2abd5e3c800'
 task updateChangelog << {
 	def changelogFile = new File(projectDir, "CHANGELOG")
 	def changelog = changelogFile.text
