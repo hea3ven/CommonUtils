@@ -1,5 +1,7 @@
 package com.hea3ven.tools.commonutils.mod;
 
+import javax.annotation.Nonnull;
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +10,7 @@ import java.util.function.Function;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -22,10 +25,14 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -71,6 +78,9 @@ public class ProxyModBase {
 	private SimpleNetworkWrapper netChannel;
 	KeyBindingManager keyBindingManager;
 	private ConfigManagerBuilder configManagerBuilder;
+
+	private GameProfile fakePlayerProfile = null;
+	private WeakReference<FakePlayer> fakePlayer = new WeakReference<>(null);
 
 	public ProxyModBase(String modId) {
 		this.modId = modId;
@@ -340,5 +350,26 @@ public class ProxyModBase {
 	public void addCommand(ICommand cmd) {
 		if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
 			ClientCommandHandler.instance.registerCommand(cmd);
+	}
+
+	public void setFakePlayerProfile(GameProfile fakePlayerProfile) {
+		this.fakePlayerProfile = fakePlayerProfile;
+	}
+
+	@Nonnull
+	public FakePlayer getFakePlayer(@Nonnull World world) {
+		if (!(world instanceof WorldServer))
+			throw new RuntimeException("Called getFakePlayer on the client world");
+		return getFakePlayer((WorldServer) world);
+	}
+
+	@Nonnull
+	public FakePlayer getFakePlayer(@Nonnull WorldServer world) {
+		FakePlayer player = fakePlayer.get();
+		if (player == null) {
+			player = FakePlayerFactory.get(world, fakePlayerProfile);
+			fakePlayer = new WeakReference<>(player);
+		}
+		return player;
 	}
 }
