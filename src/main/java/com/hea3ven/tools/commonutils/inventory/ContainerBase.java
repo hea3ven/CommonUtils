@@ -112,6 +112,8 @@ public abstract class ContainerBase extends Container {
 		int end = endIndex;
 
 		for (int attempt = 0; attempt < 2; attempt++) {
+			if(attempt == 0 && !slot.getImmutableStack().isStackable())
+				continue;
 			if (reverseDirection) {
 				i = endIndex - 1;
 				step = -1;
