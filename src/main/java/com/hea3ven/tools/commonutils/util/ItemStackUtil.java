@@ -3,8 +3,12 @@ package com.hea3ven.tools.commonutils.util;
 import java.util.Random;
 
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -42,5 +46,16 @@ public class ItemStackUtil {
 		return stackA.getItem() == stackB.getItem() &&
 				(!stackA.getHasSubtypes() || stackA.getMetadata() == stackB.getMetadata()) &&
 				ItemStack.areItemStackTagsEqual(stackA, stackB);
+	}
+
+	public static EnumActionResult useItem(World world, EntityPlayer player, ItemStack stack, BlockPos pos,
+			EnumHand hand, EnumFacing facing) {
+		EnumActionResult result =
+				stack.getItem().onItemUseFirst(stack, player, world, pos, facing, 0.5F, 0.5F, 0.5F, hand);
+
+		if (result == EnumActionResult.PASS) {
+			result = stack.getItem().onItemUse(stack, player, world, pos, hand, facing, 0.5F, 0.5F, 0.5F);
+		}
+		return result;
 	}
 }

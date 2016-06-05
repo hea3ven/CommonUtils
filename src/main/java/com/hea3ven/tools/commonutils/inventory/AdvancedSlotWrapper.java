@@ -270,7 +270,7 @@ public class AdvancedSlotWrapper implements IAdvancedSlot {
 
 	@Override
 	public boolean canTransferFromSlot() {
-		return slot.getStack() != null && slot.getStack().isStackable() && slot.getStack().stackSize > 0;
+		return slot.getStack() != null && slot.getStack().stackSize > 0;
 	}
 
 	@Override
