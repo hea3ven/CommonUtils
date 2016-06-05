@@ -21,7 +21,7 @@ apply plugin: 'maven'
 
 import org.ajoberstar.grgit.Grgit
 
-version = '2.2.1'
+version = '2.2.2'
 group = 'com.hea3ven.tools.commonutils'
 archivesBaseName = 'h3nt-commonutils'
 
@@ -50,7 +50,7 @@ uploadArchives {
 	}
 }
 
-def last_release_commit = 'c1c7010a3d5de8fe7ef01aa6a1e8f07ea1d85413'
+def last_release_commit = '447b5c664c16fe0938a3b42aa47b6bf721b21adc'
 task updateChangelog << {
 	def changelogFile = new File(projectDir, "CHANGELOG")
 	def changelog = changelogFile.text
