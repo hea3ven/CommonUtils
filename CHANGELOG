@@ -1,3 +1,8 @@
+1.9.4-2.2.2:
+	* Add FakePlayer handling
+	* Add ItemStackUtil.useItem
+	* Fix shift-clicking not transfering unstackable items in ContainerBase
+
 1.9.4-2.2.1:
 	* Update to Minecraft 1.9.4
 
