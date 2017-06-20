@@ -64,7 +64,18 @@ public class ItemHandlerComposite implements IItemHandler {
 		for (IItemHandler handler : handlers) {
 			if (slot < slots + handler.getSlots())
 				return outputHandlers.contains(handler) ?
-						handler.extractItem(slot - slots, amount, simulate) : null;
+						handler.extractItem(slot - slots, amount, simulate) : ItemStack.EMPTY;
+			slots += handler.getSlots();
+		}
+		throw new RuntimeException("Slot " + slot + " not in valid range - [0," + totalSlots + ")");
+	}
+
+	@Override
+	public int getSlotLimit(int slot) {
+		int slots = 0;
+		for (IItemHandler handler : handlers) {
+			if (slot < slots + handler.getSlots())
+				return handler.getSlotLimit(slot - slots);
 			slots += handler.getSlots();
 		}
 		throw new RuntimeException("Slot " + slot + " not in valid range - [0," + totalSlots + ")");

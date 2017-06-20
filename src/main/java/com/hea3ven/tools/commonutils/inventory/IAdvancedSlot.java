@@ -8,7 +8,7 @@ public interface IAdvancedSlot {
 
 	ItemStack onPickUp(EntityPlayer player, int clickedButton);
 
-	void onSwapPlayerStack(EntityPlayer player, int equipSlot);
+	void onSwapPlayerStack(int clickedButton, EntityPlayer player, int equipSlot);
 
 	void onClone(EntityPlayer player);
 

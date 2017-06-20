@@ -16,12 +16,13 @@ public class SlotLocked extends SlotItemHandlerBase {
 	}
 
 	@Override
-	public void onPickupFromSlot(EntityPlayer playerIn, ItemStack stack) {
+	public ItemStack onTake(EntityPlayer playerIn, ItemStack stack) {
+		return stack;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int amount) {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

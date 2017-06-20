@@ -1,0 +1,3 @@
+@javax.annotation.ParametersAreNonnullByDefault
+@mcp.MethodsReturnNonnullByDefault
+package com.hea3ven.tools.commonutils.inventory;

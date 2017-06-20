@@ -1,10 +1,11 @@
 package com.hea3ven.tools.commonutils.inventory;
 
+import java.util.Collections;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.items.IItemHandler;
@@ -46,15 +47,16 @@ public class GenericContainer extends ContainerBase {
 	}
 
 	public GenericContainer addPlayerSlots(InventoryPlayer playerInv) {
-		return addPlayerSlots(playerInv, null);
+		return addPlayerSlots(playerInv, Collections.emptySet());
 	}
 
 	public GenericContainer addPlayerSlots(final InventoryPlayer playerInv, final Set<Integer> lockedSlots) {
 		playerSlotsStart = inventorySlots.size();
-		CombinedInvWrapper playerItemHandler = new CombinedInvWrapper(new PlayerMainInvWrapper(playerInv), new PlayerOffhandInvWrapper(playerInv));
+		CombinedInvWrapper playerItemHandler =
+				new CombinedInvWrapper(new PlayerMainInvWrapper(playerInv), new PlayerOffhandInvWrapper(playerInv));
 		addSlots(playerItemHandler, 9, 8, 84, 9, 3);
 		addSlots(8, 142, 9, 1, (slot, x, y) -> {
-			if (lockedSlots != null && lockedSlots.contains(slot))
+			if (lockedSlots.contains(slot))
 				return new SlotLocked(playerItemHandler, slot, x, y);
 			else
 				return new SlotItemHandlerBase(playerItemHandler, slot, x, y);
@@ -90,15 +92,15 @@ public class GenericContainer extends ContainerBase {
 			valuesCache = new int[updateHandler.getFieldCount()];
 			for (int i = 0; i < updateHandler.getFieldCount(); i++) {
 				valuesCache[i] = updateHandler.getField(i);
-				for (ICrafting crafting : listeners) {
-					crafting.sendProgressBarUpdate(this, i, updateHandler.getField(i));
+				for (IContainerListener crafting : listeners) {
+					crafting.sendWindowProperty(this, i, updateHandler.getField(i));
 				}
 			}
 		} else {
 			for (int i = 0; i < valuesCache.length; i++) {
 				if (valuesCache[i] != updateHandler.getField(i)) {
-					for (ICrafting crafting : listeners) {
-						crafting.sendProgressBarUpdate(this, i, updateHandler.getField(i));
+					for (IContainerListener crafting : listeners) {
+						crafting.sendWindowProperty(this, i, updateHandler.getField(i));
 					}
 					valuesCache[i] = updateHandler.getField(i);
 				}
@@ -112,16 +114,16 @@ public class GenericContainer extends ContainerBase {
 		if (slot != null && slot.canTransferFromSlot()) {
 			if (playerSlotsStart <= index && index < playerSlotsStart + 9 * 4) {
 				if (!mergeSlot(slot, 0, playerSlotsStart, true)) {
-					return null;
+					return ItemStack.EMPTY;
 				}
 			} else {
 				if (!mergeSlot(slot, playerSlotsStart, playerSlotsStart + 9 * 4, true)) {
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public int getPlayerSlotsStart() {

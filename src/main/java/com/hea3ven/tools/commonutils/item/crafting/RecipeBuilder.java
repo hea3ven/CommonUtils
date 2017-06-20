@@ -42,8 +42,8 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 								getInputsAsString());
 		} else
 			result = output.copy();
-		if (result.stackSize == 1)
-			result.stackSize = outputSize;
+		if (result.getCount() == 1)
+			result.setCount(outputSize);
 		if (shaped) {
 			Map<Character, Boolean> mappings = new HashMap<>();
 			List<Object> processedIngredients = new ArrayList<>();
@@ -125,11 +125,13 @@ public class RecipeBuilder<T extends RecipeBuilder> {
 	}
 
 	protected IRecipe createShapedRecipe(ItemStack result, Object[] inputs) {
-		return new ShapedOreRecipe(result, inputs);
+//		return new ShapedOreRecipe(result, inputs);
+		return null;
 	}
 
 	protected IRecipe createShapelessRecipe(ItemStack result, Object[] inputs) {
-		return new ShapelessOreRecipe(result, inputs);
+//		return new ShapelessOreRecipe(result, inputs);
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -1,11 +1,14 @@
 package com.hea3ven.tools.commonutils.inventory;
 
+import java.util.Arrays;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -22,7 +25,7 @@ public class InventoryGeneric implements IInventory, INBTSerializable<NBTTagList
 
 	@Override
 	public String getName() {
-		return null;
+		return "inv";
 	}
 
 	@Override
@@ -32,7 +35,7 @@ public class InventoryGeneric implements IInventory, INBTSerializable<NBTTagList
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return null;
+		return new TextComponentTranslation(getName());
 	}
 
 	@Override
@@ -43,21 +46,21 @@ public class InventoryGeneric implements IInventory, INBTSerializable<NBTTagList
 	@Override
 	public ItemStack getStackInSlot(int index) {
 		if (index >= size)
-			return null;
+			return ItemStack.EMPTY;
 		return inv[index];
 	}
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
 		if (index >= size)
-			return null;
+			return ItemStack.EMPTY;
 		return inv[index].splitStack(count);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
 		if (index >= size)
-			return null;
+			return ItemStack.EMPTY;
 		ItemStack stack = inv[index];
 		inv[index] = null;
 		return stack;
@@ -80,7 +83,7 @@ public class InventoryGeneric implements IInventory, INBTSerializable<NBTTagList
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
+	public boolean isUsableByPlayer(EntityPlayer player) {
 		return true;
 	}
 
@@ -95,6 +98,11 @@ public class InventoryGeneric implements IInventory, INBTSerializable<NBTTagList
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return index < size;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return Arrays.stream(inv).allMatch(ItemStack::isEmpty);
 	}
 
 	@Override
@@ -139,7 +147,7 @@ public class InventoryGeneric implements IInventory, INBTSerializable<NBTTagList
 			NBTTagCompound slotNbt = invNbt.getCompoundTagAt(i);
 			byte slot = slotNbt.getByte("Slot");
 			if (0 <= slot && slot < size) {
-				inv[slot] = ItemStack.loadItemStackFromNBT(slotNbt);
+				inv[slot] = new ItemStack(slotNbt);
 			}
 		}
 	}

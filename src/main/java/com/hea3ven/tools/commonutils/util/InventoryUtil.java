@@ -12,7 +12,7 @@ public class InventoryUtil {
 		NBTTagList slotsNbt = new NBTTagList();
 		for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
 			ItemStack stack = inv.getStackInSlot(slot);
-			if (stack != null) {
+			if (!stack.isEmpty()) {
 				NBTTagCompound slotNbt = new NBTTagCompound();
 				slotNbt.setByte("Slot", (byte) slot);
 				stack.writeToNBT(slotNbt);
@@ -28,7 +28,7 @@ public class InventoryUtil {
 		NBTTagList slotsNbt = compound.getTagList("Inventory", NBT.TAG_COMPOUND);
 		for (int i = 0; i < slotsNbt.tagCount(); i++) {
 			NBTTagCompound slotNbt = slotsNbt.getCompoundTagAt(i);
-			ItemStack stack = ItemStack.loadItemStackFromNBT(slotNbt);
+			ItemStack stack = new ItemStack(slotNbt);
 			inv.setInventorySlotContents(slotNbt.getByte("Slot"), stack);
 		}
 	}

@@ -173,26 +173,11 @@ public class ProxyModBase {
 	protected void registerCreativeTabs() {
 	}
 
-	public CreativeTabs addCreativeTab(String name, final Item icon) {
-		CreativeTabs tab = new CreativeTabs(name) {
-			@Override
-			public Item getTabIconItem() {
-				return icon;
-			}
-		};
-		creativeTabs.put(name, tab);
-		return tab;
-	}
-
 	public CreativeTabs addCreativeTab(String name, final ItemStack icon) {
 		CreativeTabs tab = new CreativeTabs(name) {
 			@Override
-			public Item getTabIconItem() {
-				return icon.getItem();
-			}
-
-			@Override
-			public ItemStack getIconItemStack() {
+			@SideOnly(Side.CLIENT)
+			public ItemStack getTabIconItem() {
 				return icon;
 			}
 		};
@@ -265,10 +250,10 @@ public class ProxyModBase {
 	}
 
 	protected void addRecipe(boolean shapeless, ItemStack result, Object... recipe) {
-		if (shapeless)
-			recipes.add(new ShapelessOreRecipe(result, recipe));
-		else
-			recipes.add(new ShapedOreRecipe(result, recipe));
+//		if (shapeless)
+//			recipes.add(new ShapelessOreRecipe(result, recipe));
+//		else
+//			recipes.add(new ShapedOreRecipe(result, recipe));
 	}
 
 	protected void addRecipe(IRecipe recipe) {

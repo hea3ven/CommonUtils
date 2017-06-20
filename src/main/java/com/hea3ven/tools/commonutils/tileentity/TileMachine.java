@@ -1,5 +1,7 @@
 package com.hea3ven.tools.commonutils.tileentity;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -20,10 +22,11 @@ public class TileMachine extends TileEntity {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
+	@Nonnull
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		if (this.hasCustomName())
 			compound.setString("CustomName", this.customName);
+		return super.writeToNBT(compound);
 	}
 
 	@Override

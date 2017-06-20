@@ -11,7 +11,7 @@ public class PlayerUtil {
 	public static HeldEquipment getHeldEquipment(EntityPlayer player, Item item) {
 		for (EnumHand hand : EnumHand.values()) {
 			ItemStack stack = player.getHeldItem(hand);
-			if (stack != null && stack.getItem() == item)
+			if (stack.getItem() == item)
 				return new HeldEquipment(player, hand);
 		}
 		return null;

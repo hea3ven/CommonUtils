@@ -30,26 +30,26 @@ public abstract class ContainerBase extends Container {
 
 	@Override
 	public ItemStack slotClick(int slotId, int clickedButton, ClickType clickTypeIn, EntityPlayer player) {
-		ItemStack itemstack = null;
+		ItemStack itemstack = ItemStack.EMPTY;
 		InventoryPlayer inventoryplayer = player.inventory;
 
 		if (clickTypeIn == ClickType.QUICK_CRAFT) {
 			return super.slotClick(slotId, clickedButton, clickTypeIn, player);
+//		}else if (this.dragEvent != 0){
+//			{
+//				this.resetDrag();
+//			}
 		} else if ((clickTypeIn == ClickType.PICKUP || clickTypeIn == ClickType.QUICK_MOVE) &&
 				(clickedButton == 0 || clickedButton == 1)) {
 			if (slotId == -999) {
-				if (inventoryplayer.getItemStack() != null) {
+				if (!inventoryplayer.getItemStack().isEmpty()) {
 					if (clickedButton == 0) {
 						player.dropItem(inventoryplayer.getItemStack(), true);
-						inventoryplayer.setItemStack(null);
+						inventoryplayer.setItemStack(ItemStack.EMPTY);
 					}
 
 					if (clickedButton == 1) {
 						player.dropItem(inventoryplayer.getItemStack().splitStack(1), true);
-
-						if (inventoryplayer.getItemStack().stackSize == 0) {
-							inventoryplayer.setItemStack(null);
-						}
 					}
 				}
 			} else if (clickTypeIn == ClickType.QUICK_MOVE) {
@@ -64,7 +64,7 @@ public abstract class ContainerBase extends Container {
 		} else if (clickTypeIn == ClickType.SWAP && clickedButton >= 0 && clickedButton < 9) {
 			IAdvancedSlot slot = getAdvancedSlot(slotId);
 			if (slot != null)
-				slot.onSwapPlayerStack(player, clickedButton);
+				slot.onSwapPlayerStack(clickedButton, player, clickedButton);
 		} else if (clickTypeIn == ClickType.CLONE) {
 			IAdvancedSlot slot = getAdvancedSlot(slotId);
 			if (slot != null)
@@ -96,10 +96,6 @@ public abstract class ContainerBase extends Container {
 		return (slot instanceof IAdvancedSlot) ? (IAdvancedSlot) slot : new AdvancedSlotWrapper(slot);
 	}
 
-	public void retrySlotClick(int slotId, int clickedButton, boolean mode, EntityPlayer playerIn) {
-		super.retrySlotClick(slotId, clickedButton, mode, playerIn);
-	}
-
 	@Override
 	public boolean canDragIntoSlot(Slot slot) {
 		return getAdvancedSlot(slot).canDragIntoSlot();
@@ -123,8 +119,8 @@ public abstract class ContainerBase extends Container {
 			while (slot.canTransferFromSlot() && i != end) {
 				IAdvancedSlot targetSlot = getAdvancedSlot(i);
 				if (targetSlot != null) {
-					if ((attempt == 0 && targetSlot.getImmutableStack() != null) ||
-							(attempt == 1 && targetSlot.getImmutableStack() == null)) {
+					if ((attempt == 0 && !targetSlot.getImmutableStack().isEmpty()) ||
+							(attempt == 1 && !targetSlot.getImmutableStack().isEmpty())) {
 						if (targetSlot.transferFrom(slot)) {
 							flag = true;
 						}

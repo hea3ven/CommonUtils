@@ -19,8 +19,6 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.*;
-import net.minecraft.client.resources.data.IMetadataSection;
-import net.minecraft.client.resources.data.IMetadataSerializer;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -48,24 +46,12 @@ public class ResourceScannerClient extends ResourceScanner {
 		List<IResourcePack> resPacks =
 				ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "field_110449_ao",
 						"defaultResourcePacks");
-		resPacks.add(new FolderResourcePack(dir.toFile()) {
-			@Override
-			public <T extends IMetadataSection> T getPackMetadata(IMetadataSerializer serializer,
-					String section) throws IOException {
-				return null;
-			}
-		});
+		resPacks.add(new FolderResourcePack(dir.toFile()));
 		try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(dir)) {
 			for (Path subPath : dirStream) {
 				if (Files.isRegularFile(subPath)) {
 					if (subPath.toString().endsWith(".zip")) {
-						resPacks.add(new FileResourcePack(subPath.toFile()) {
-							@Override
-							public <T extends IMetadataSection> T getPackMetadata(
-									IMetadataSerializer serializer, String section) throws IOException {
-								return null;
-							}
-						});
+						resPacks.add(new FileResourcePack(subPath.toFile()));
 					}
 				}
 			}

@@ -1,5 +1,7 @@
 package com.hea3ven.tools.commonutils.block.base;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -28,6 +30,7 @@ public abstract class BlockMachine extends BlockContainer {
 	}
 
 	@Override
+	@Nonnull
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.MODEL;
 	}
@@ -46,8 +49,7 @@ public abstract class BlockMachine extends BlockContainer {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-			EnumHand side, ItemStack hitX, EnumFacing hitY, float hitZ, float p_180639_9_,
-			float p_180639_10_) {
+			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		TileMachine te = WorldHelper.getTile(world, pos);
 		if (te != null)
 

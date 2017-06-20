@@ -96,7 +96,7 @@ public abstract class ModInitializerCommon {
 	private void registerRecipes(ProxyModBase proxy) {
 		proxy.registerRecipes();
 		for (IRecipe recipe : proxy.recipes) {
-			GameRegistry.addRecipe(recipe);
+//			GameRegistry.addRecipe(recipe);
 		}
 	}
 

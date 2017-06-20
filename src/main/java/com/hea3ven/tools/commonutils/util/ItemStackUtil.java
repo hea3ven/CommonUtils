@@ -27,15 +27,13 @@ public class ItemStackUtil {
 				pos.getY() + (double) yOff, pos.getZ() + (double) zOff, stack.copy());
 
 		if (stack.hasTagCompound()) {
-			entityitem
-					.getEntityItem()
-					.setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+			entityitem.getItem().setTagCompound(stack.getTagCompound().copy());
 		}
 
 		entityitem.motionX = RANDOM.nextGaussian() * 0.05d;
 		entityitem.motionY = RANDOM.nextGaussian() * 0.05d + 0.20000000298023224d;
 		entityitem.motionZ = RANDOM.nextGaussian() * 0.05d;
-		world.spawnEntityInWorld(entityitem);
+		world.spawnEntity(entityitem);
 	}
 
 	public static boolean areItemsCompletelyEqual(ItemStack stackA, ItemStack stackB) {
@@ -51,10 +49,10 @@ public class ItemStackUtil {
 	public static EnumActionResult useItem(World world, EntityPlayer player, ItemStack stack, BlockPos pos,
 			EnumHand hand, EnumFacing facing) {
 		EnumActionResult result =
-				stack.getItem().onItemUseFirst(stack, player, world, pos, facing, 0.5F, 0.5F, 0.5F, hand);
+				stack.getItem().onItemUseFirst(player, world, pos, facing, 0.5F, 0.5F, 0.5F, hand);
 
 		if (result == EnumActionResult.PASS) {
-			result = stack.getItem().onItemUse(stack, player, world, pos, hand, facing, 0.5F, 0.5F, 0.5F);
+			result = stack.getItem().onItemUse(player, world, pos, hand, facing, 0.5F, 0.5F, 0.5F);
 		}
 		return result;
 	}

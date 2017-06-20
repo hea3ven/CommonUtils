@@ -1,5 +1,6 @@
 package com.hea3ven.tools.commonutils.util;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 
 import com.google.common.collect.AbstractIterator;
@@ -18,6 +19,7 @@ public class BlockPosUtil {
 		return new Iterable<ModifiableBlockPos>() {
 
 			@Override
+			@Nonnull
 			public Iterator<ModifiableBlockPos> iterator() {
 				return new AbstractIterator<ModifiableBlockPos>() {
 					private int currX = posStart.getX();

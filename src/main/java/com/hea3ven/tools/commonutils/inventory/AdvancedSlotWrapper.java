@@ -4,10 +4,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import com.hea3ven.tools.commonutils.util.ItemStackUtil;
+import com.hea3ven.tools.commonutils.util.SlotUtil;
 
 public class AdvancedSlotWrapper implements IAdvancedSlot {
 	private final Slot slot;
@@ -19,25 +19,15 @@ public class AdvancedSlotWrapper implements IAdvancedSlot {
 	@Override
 	public ItemStack onQuickMove(ContainerBase container, EntityPlayer player, int clickedButton) {
 
-		ItemStack resultStack = null;
-		if (slot.canTakeStack(player)) {
-			ItemStack slotStack = slot.getStack();
+		if (!slot.canTakeStack(player)) {
+			return ItemStack.EMPTY;
+		}
 
-			if (slotStack != null && slotStack.stackSize <= 0) {
-				resultStack = slotStack.copy();
-				slot.putStack(null);
-			}
-
-			ItemStack extraStack = container.transferStackInSlot(player, slot.slotNumber);
-
-			if (extraStack != null) {
-				Item item = extraStack.getItem();
-				resultStack = extraStack.copy();
-
-				if (slot.getStack() != null && slot.getStack().getItem() == item) {
-					container.retrySlotClick(slot.slotNumber, clickedButton, true, player);
-				}
-			}
+		ItemStack resultStack = ItemStack.EMPTY;
+		for (ItemStack extraStack = container.transferStackInSlot(player, slot.slotNumber);
+				!extraStack.isEmpty() && ItemStack.areItemsEqual(slot.getStack(), extraStack);
+				extraStack = container.transferStackInSlot(player, slot.slotNumber)) {
+			resultStack = extraStack.copy();
 		}
 		return resultStack;
 	}
@@ -47,20 +37,20 @@ public class AdvancedSlotWrapper implements IAdvancedSlot {
 		ItemStack slotStack = slot.getStack();
 		ItemStack playerStack = player.inventory.getItemStack();
 
-		ItemStack resultStack = null;
-		if (slotStack != null) {
+		ItemStack resultStack = ItemStack.EMPTY;
+		if (!slotStack.isEmpty()) {
 			resultStack = slotStack.copy();
 		}
 
-		if (slotStack == null) {
+		if (slotStack.isEmpty()) {
 			putPlayerStackInSlot(clickedButton, player.inventory, playerStack);
 		} else if (slot.canTakeStack(player)) {
-			if (playerStack == null) {
+			if (playerStack.isEmpty()) {
 				putSlotStackInPlayer(player, clickedButton, player.inventory, slotStack);
 			} else if (slot.isItemValid(playerStack)) {
 				if (ItemStackUtil.areItemsCompletelyEqual(slotStack, playerStack)) {
 					mergePlayerStackIntoSlot(clickedButton, player.inventory, slotStack, playerStack);
-				} else if (playerStack.stackSize <= slot.getItemStackLimit(playerStack)) {
+				} else if (playerStack.getCount() <= slot.getItemStackLimit(playerStack)) {
 					swapPlayerAndSlotStacks(player.inventory, slotStack, playerStack);
 				}
 			} else if (slotStack.getItem() == playerStack.getItem() &&
@@ -76,73 +66,64 @@ public class AdvancedSlotWrapper implements IAdvancedSlot {
 	}
 
 	private void putPlayerStackInSlot(int clickedButton, InventoryPlayer playerInv, ItemStack playerStack) {
-		if (playerStack != null && slot.isItemValid(playerStack)) {
-			int putSize = clickedButton == 0 ? playerStack.stackSize : 1;
+		if (!playerStack.isEmpty() && slot.isItemValid(playerStack)) {
+			int putSize = clickedButton == 0 ? playerStack.getCount() : 1;
 
 			if (putSize > slot.getItemStackLimit(playerStack)) {
 				putSize = slot.getItemStackLimit(playerStack);
 			}
 
 			slot.putStack(playerStack.splitStack(putSize));
-
-			if (playerStack.stackSize == 0) {
-				playerInv.setItemStack(null);
-			}
 		}
 	}
 
 	private void putSlotStackInPlayer(EntityPlayer player, int clickedButton, InventoryPlayer playerInv,
 			ItemStack slotStack) {
-		if (slotStack.stackSize > 0) {
+		if (!slotStack.isEmpty()) {
 			int k2 =
-					clickedButton == 0 ? slotStack.stackSize : (slotStack.stackSize + 1) / 2;
+					clickedButton == 0 ? slotStack.getCount() : (slotStack.getCount() + 1) / 2;
 			playerInv.setItemStack(slot.decrStackSize(k2));
 
-			if (slotStack.stackSize <= 0) {
-				slot.putStack(null);
+			if (slotStack.isEmpty()) {
+				slot.putStack(ItemStack.EMPTY);
 			}
 
-			slot.onPickupFromSlot(player, playerInv.getItemStack());
+			slot.onTake(player, playerInv.getItemStack());
 		} else {
-			slot.putStack(null);
-			playerInv.setItemStack(null);
+			slot.putStack(ItemStack.EMPTY);
+			playerInv.setItemStack(ItemStack.EMPTY);
 		}
 	}
 
 	private void mergePlayerStackIntoSlot(int clickedButton, InventoryPlayer playerInv, ItemStack slotStack,
 			ItemStack playerStack) {
-		int j2 = clickedButton == 0 ? playerStack.stackSize : 1;
+		int j2 = clickedButton == 0 ? playerStack.getCount() : 1;
 
-		if (j2 > slot.getItemStackLimit(playerStack) - slotStack.stackSize) {
-			j2 = slot.getItemStackLimit(playerStack) - slotStack.stackSize;
+		if (j2 > slot.getItemStackLimit(playerStack) - slotStack.getCount()) {
+			j2 = slot.getItemStackLimit(playerStack) - slotStack.getCount();
 		}
 
-		if (j2 > playerStack.getMaxStackSize() - slotStack.stackSize) {
-			j2 = playerStack.getMaxStackSize() - slotStack.stackSize;
+		if (j2 > playerStack.getMaxStackSize() - slotStack.getCount()) {
+			j2 = playerStack.getMaxStackSize() - slotStack.getCount();
 		}
 
-		playerStack.splitStack(j2);
-
-		if (playerStack.stackSize == 0) {
-			playerInv.setItemStack(null);
-		}
-
-		slotStack.stackSize += j2;
+		playerStack.shrink(j2);
+		slotStack.grow(j2);
 	}
 
 	private void mergeSlotStackIntoPlayer(EntityPlayer player, InventoryPlayer playerInv, ItemStack slotStack,
 			ItemStack playerStack) {
-		int i2 = slotStack.stackSize;
+		int i2 = slotStack.getCount();
 
-		if (i2 > 0 && i2 + playerStack.stackSize <= playerStack.getMaxStackSize()) {
-			playerStack.stackSize += i2;
+		if (i2 > 0 && i2 + playerStack.getCount() <= playerStack.getMaxStackSize()) {
+			playerStack.grow(i2);
 			slotStack = slot.decrStackSize(i2);
 
-			if (slotStack.stackSize == 0) {
-				slot.putStack(null);
+			if (slotStack.isEmpty()) {
+				slot.putStack(ItemStack.EMPTY);
 			}
 
-			slot.onPickupFromSlot(player, playerInv.getItemStack());
+			slot.onTake(player, playerInv.getItemStack());
 		}
 	}
 
@@ -153,75 +134,101 @@ public class AdvancedSlotWrapper implements IAdvancedSlot {
 	}
 
 	@Override
-	public void onSwapPlayerStack(EntityPlayer player, int equipSlot) {
-		ItemStack equipStack = player.inventory.getStackInSlot(equipSlot);
+	public void onSwapPlayerStack(int clickedButton, EntityPlayer player, int equipSlot) {
+		ItemStack itemstack6 = player.inventory.getStackInSlot(equipSlot);
 
-		if (equipStack != null && equipStack.stackSize <= 0) {
-			equipStack = null;
-			player.inventory.setInventorySlotContents(equipSlot, null);
-		}
+		ItemStack itemstack10 = slot.getStack();
 
-		ItemStack slotStack = slot.getStack();
-
-		if (equipStack == null && slotStack != null) {
-			if (slot.canTakeStack(player)) {
-				player.inventory.setInventorySlotContents(equipSlot, slotStack);
-				slot.putStack(null);
-				slot.onPickupFromSlot(player, slotStack);
-			}
-		} else if (equipStack != null && slotStack == null) {
-			if (slot.isItemValid(equipStack)) {
-				int k1 = slot.getItemStackLimit(equipStack);
-
-				if (equipStack.stackSize > k1) {
-					slot.putStack(equipStack.splitStack(k1));
-				} else {
-					slot.putStack(equipStack);
-					player.inventory.setInventorySlotContents(equipSlot, null);
+		if (!itemstack6.isEmpty() || !itemstack10.isEmpty()) {
+			if (itemstack6.isEmpty()) {
+				if (slot.canTakeStack(player)) {
+					player.inventory.setInventorySlotContents(clickedButton, itemstack10);
+					SlotUtil.onSwapCraft(slot, itemstack10.getCount());
+					slot.putStack(ItemStack.EMPTY);
+					slot.onTake(player, itemstack10);
 				}
-			}
-		} else if (equipStack != null) {
-			if (slot.canTakeStack(player) && slot.isItemValid(equipStack)) {
-				int mergeSize = slot.getItemStackLimit(equipStack);
+			} else if (itemstack10.isEmpty()) {
+				if (slot.isItemValid(itemstack6)) {
+					int l1 = slot.getItemStackLimit(itemstack6);
 
-				if (equipStack.stackSize > mergeSize) {
-					slot.putStack(equipStack.splitStack(mergeSize));
-					slot.onPickupFromSlot(player, slotStack);
+					if (itemstack6.getCount() > l1) {
+						slot.putStack(itemstack6.splitStack(l1));
+					} else {
+						slot.putStack(itemstack6);
+						player.inventory.setInventorySlotContents(clickedButton, ItemStack.EMPTY);
+					}
+				}
+			} else if (slot.canTakeStack(player) && slot.isItemValid(itemstack6)) {
+				int i2 = slot.getItemStackLimit(itemstack6);
 
-					if (!player.inventory.addItemStackToInventory(slotStack)) {
-						player.dropItem(slotStack, true);
+				if (itemstack6.getCount() > i2) {
+					slot.putStack(itemstack6.splitStack(i2));
+					slot.onTake(player, itemstack10);
+
+					if (!player.inventory.addItemStackToInventory(itemstack10)) {
+						player.dropItem(itemstack10, true);
 					}
 				} else {
-					slot.putStack(equipStack);
-					player.inventory.setInventorySlotContents(equipSlot, slotStack);
-					slot.onPickupFromSlot(player, slotStack);
+					slot.putStack(itemstack6);
+					player.inventory.setInventorySlotContents(clickedButton, itemstack10);
+					slot.onTake(player, itemstack10);
 				}
 			}
 		}
+//		if (itemstack6.isEmpty() && !itemstack10.isEmpty()) {
+//			if (slot.canTakeStack(player)) {
+//				player.inventory.setInventorySlotContents(equipSlot, itemstack10);
+//				slot.putStack(ItemStack.EMPTY);
+//				slot.onTake(player, itemstack10);
+//			}
+//		} else if (!itemstack6.isEmpty() && itemstack10.isEmpty()) {
+//			if (slot.isItemValid(itemstack6)) {
+//				int k1 = slot.getItemStackLimit(itemstack6);
+
+//				slot.putStack(itemstack6.splitStack(k1));
+//			}
+//		} else if (!itemstack6.isEmpty()) {
+//			if (slot.canTakeStack(player) && slot.isItemValid(itemstack6)) {
+//				int mergeSize = slot.getItemStackLimit(itemstack6);
+
+//				if (itemstack6.getCount() > mergeSize) {
+//					slot.putStack(itemstack6.splitStack(mergeSize));
+//					slot.onTake(player, itemstack10);
+
+//					if (!player.inventory.addItemStackToInventory(itemstack10)) {
+//						player.dropItem(itemstack10, true);
+//					}
+//				} else {
+//					slot.putStack(itemstack6);
+//					player.inventory.setInventorySlotContents(equipSlot, itemstack10);
+//					slot.onTake(player, itemstack10);
+//				}
+//			}
+//		}
 	}
 
 	@Override
 	public void onClone(EntityPlayer player) {
-		if (!player.capabilities.isCreativeMode || player.inventory.getItemStack() != null)
+		if (!player.capabilities.isCreativeMode || !player.inventory.getItemStack().isEmpty())
 			return;
 		if (slot.getHasStack()) {
-			if (slot.getStack().stackSize > 0) {
+			if (!slot.getStack().isEmpty()) {
 				ItemStack stack = slot.getStack().copy();
-				stack.stackSize = stack.getMaxStackSize();
+				stack.setCount(stack.getMaxStackSize());
 				player.inventory.setItemStack(stack);
 			} else {
-				slot.putStack(null);
+				slot.putStack(ItemStack.EMPTY);
 			}
 		}
 	}
 
 	@Override
 	public void onThrow(EntityPlayer player, int clickedButton) {
-		if (player.inventory.getItemStack() != null)
+		if (!player.inventory.getItemStack().isEmpty())
 			return;
 		if (slot.getHasStack() && slot.canTakeStack(player)) {
-			ItemStack stack = slot.decrStackSize(clickedButton == 0 ? 1 : slot.getStack().stackSize);
-			slot.onPickupFromSlot(player, stack);
+			ItemStack stack = slot.decrStackSize(clickedButton == 0 ? 1 : slot.getStack().getCount());
+			slot.onTake(player, stack);
 			player.dropItem(stack, true);
 		}
 	}
@@ -230,31 +237,31 @@ public class AdvancedSlotWrapper implements IAdvancedSlot {
 	public void onPickUpAll(ContainerBase container, EntityPlayer player, int clickedButton) {
 		ItemStack playerStack = player.inventory.getItemStack();
 
-		if (playerStack != null && (!slot.getHasStack() || !slot.canTakeStack(player))) {
+		if (!playerStack.isEmpty() && (!slot.getHasStack() || !slot.canTakeStack(player))) {
 			int startSlot = clickedButton == 0 ? 0 : container.inventorySlots.size() - 1;
 			int step = clickedButton == 0 ? 1 : -1;
 
 			for (int i3 = 0; i3 < 2; ++i3) {
 				for (int slot = startSlot; slot >= 0 && slot < container.inventorySlots.size() &&
-						playerStack.stackSize < playerStack.getMaxStackSize(); slot += step) {
+						playerStack.getCount() < playerStack.getMaxStackSize(); slot += step) {
 					Slot otherSlot = container.inventorySlots.get(slot);
 
 					if (otherSlot.getHasStack() && Container.canAddItemToSlot(otherSlot, playerStack, true) &&
 							otherSlot.canTakeStack(player) &&
 							container.canMergeSlot(playerStack, otherSlot) &&
 							(i3 != 0 ||
-									otherSlot.getStack().stackSize !=
+									otherSlot.getStack().getCount() !=
 											otherSlot.getStack().getMaxStackSize())) {
-						int l = Math.min(playerStack.getMaxStackSize() - playerStack.stackSize,
-								otherSlot.getStack().stackSize);
+						int l = Math.min(playerStack.getMaxStackSize() - playerStack.getCount(),
+								otherSlot.getStack().getCount());
 						ItemStack itemstack2 = otherSlot.decrStackSize(l);
-						playerStack.stackSize += l;
+						playerStack.grow(l);
 
-						if (itemstack2.stackSize <= 0) {
-							otherSlot.putStack(null);
+						if (itemstack2.isEmpty()) {
+							this.slot.putStack(ItemStack.EMPTY);
 						}
 
-						otherSlot.onPickupFromSlot(player, itemstack2);
+						otherSlot.onTake(player, itemstack2);
 					}
 				}
 			}
@@ -270,17 +277,17 @@ public class AdvancedSlotWrapper implements IAdvancedSlot {
 
 	@Override
 	public boolean canTransferFromSlot() {
-		return slot.getStack() != null && slot.getStack().stackSize > 0;
+		return !slot.getStack().isEmpty();
 	}
 
 	@Override
 	public boolean transferFrom(IAdvancedSlot srcSlot) {
 		ItemStack srcStack = srcSlot.getImmutableStack();
 		ItemStack stack = slot.getStack();
-		if (stack != null) {
-			if (srcStack != null && ItemStackUtil.areStacksCombinable(stack, srcStack)) {
-				int j = srcSlot.extract(stack.getMaxStackSize() - stack.stackSize).stackSize;
-				stack.stackSize += j;
+		if (!stack.isEmpty()) {
+			if (!srcStack.isEmpty() && ItemStackUtil.areStacksCombinable(stack, srcStack)) {
+				int j = srcSlot.extract(stack.getMaxStackSize() - stack.getCount()).getCount();
+				stack.grow(j);
 				return true;
 			}
 		} else {
@@ -302,10 +309,7 @@ public class AdvancedSlotWrapper implements IAdvancedSlot {
 	@Override
 	public ItemStack extract(int size) {
 		ItemStack stack = getImmutableStack().splitStack(size);
-		if (slot.getStack().stackSize <= 0)
-			slot.putStack(null);
-		else
-			slot.onSlotChanged();
+		slot.onSlotChanged();
 		return stack;
 	}
 }

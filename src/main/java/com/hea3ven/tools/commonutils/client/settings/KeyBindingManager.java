@@ -32,7 +32,7 @@ public class KeyBindingManager {
 			final Consumer<KeyInputEvent> callback) {
 		addKeyBinding(description, keyCode, category, keyInputEvent -> {
 			HeldEquipment equipment =
-					PlayerUtil.getHeldEquipment(Minecraft.getMinecraft().thePlayer, item);
+					PlayerUtil.getHeldEquipment(Minecraft.getMinecraft().player, item);
 			if (equipment != null) {
 				callback.accept(keyInputEvent);
 			}
@@ -61,7 +61,7 @@ public class KeyBindingManager {
 		if (event.getDwheel() != 0 && Minecraft.getMinecraft().gameSettings.keyBindSneak.isKeyDown()) {
 			for (Entry<Item, Function<MouseEvent, Boolean>> entry : scrollWheelBindings.entrySet()) {
 				HeldEquipment equipment =
-						PlayerUtil.getHeldEquipment(Minecraft.getMinecraft().thePlayer, entry.getKey());
+						PlayerUtil.getHeldEquipment(Minecraft.getMinecraft().player, entry.getKey());
 				if (equipment != null) {
 					if (entry.getValue().apply(event)) {
 						event.setCanceled(true);
