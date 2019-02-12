@@ -1,35 +1,34 @@
 package com.hea3ven.tools.commonutils.util;
 
-import javax.annotation.Nonnull;
-
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.EquipmentSlot.Type;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 
 public class PlayerUtil {
-	public static HeldEquipment getHeldEquipment(EntityPlayer player, Item item) {
-		for (EnumHand hand : EnumHand.values()) {
-			ItemStack stack = player.getHeldItem(hand);
+	public static HeldEquipment getHeldEquipment(PlayerEntity player, Item item) {
+		for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+			if(equipmentSlot.getType() != Type.HAND)
+				continue;
+			ItemStack stack = player.getEquippedStack(equipmentSlot);
 			if (stack.getItem() == item)
-				return new HeldEquipment(player, hand);
+				return new HeldEquipment(player, equipmentSlot);
 		}
 		return null;
 	}
 
 	public static class HeldEquipment {
-		@Nonnull
-		public EntityPlayer player;
-		@Nonnull
-		public EnumHand hand;
+		public PlayerEntity player;
+		public EquipmentSlot hand;
 
-		public HeldEquipment(@Nonnull EntityPlayer player, @Nonnull EnumHand hand) {
+		public HeldEquipment(PlayerEntity player, EquipmentSlot hand) {
 			this.player = player;
 			this.hand = hand;
 		}
 
 		public ItemStack getStack() {
-			return player.getHeldItem(hand);
+			return player.getEquippedStack(hand);
 		}
 	}
 }

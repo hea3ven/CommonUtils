@@ -2,58 +2,42 @@ package com.hea3ven.tools.commonutils.util;
 
 import java.util.Random;
 
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.Block;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class ItemStackUtil {
-	private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random();
 
-	public static void dropFromBlock(World world, BlockPos pos, ItemStack stack) {
-		if (world.isRemote)
-			return;
+    @Deprecated
+    public static void dropFromBlock(World world, BlockPos pos, ItemStack stack) {
+        Block.dropStack(world, pos, stack);
+    }
 
-		float xOff = RANDOM.nextFloat() * 0.8F + 0.1F;
-		float yOff = RANDOM.nextFloat() * 0.8F + 0.1F;
-		float zOff = RANDOM.nextFloat() * 0.8F + 0.1F;
+    @Deprecated
+    public static boolean areItemsCompletelyEqual(ItemStack stackA, ItemStack stackB) {
+        return areStacksCombinable(stackA, stackB);
+    }
 
-		EntityItem entityitem = new EntityItem(world, pos.getX() + (double) xOff,
-				pos.getY() + (double) yOff, pos.getZ() + (double) zOff, stack.copy());
+    public static boolean areStacksCombinable(ItemStack stackA, ItemStack stackB) {
+        return ItemStack.areEqualIgnoreTags(stackA, stackB) && ItemStack.areTagsEqual(stackA,
+                stackB);
+    }
 
-		if (stack.hasTagCompound()) {
-			entityitem.getItem().setTagCompound(stack.getTagCompound().copy());
-		}
-
-		entityitem.motionX = RANDOM.nextGaussian() * 0.05d;
-		entityitem.motionY = RANDOM.nextGaussian() * 0.05d + 0.20000000298023224d;
-		entityitem.motionZ = RANDOM.nextGaussian() * 0.05d;
-		world.spawnEntity(entityitem);
-	}
-
-	public static boolean areItemsCompletelyEqual(ItemStack stackA, ItemStack stackB) {
-		return ItemStack.areItemsEqual(stackA, stackB) && ItemStack.areItemStackTagsEqual(stackA, stackB);
-	}
-
-	public static boolean areStacksCombinable(ItemStack stackA, ItemStack stackB) {
-		return stackA.getItem() == stackB.getItem() &&
-				(!stackA.getHasSubtypes() || stackA.getMetadata() == stackB.getMetadata()) &&
-				ItemStack.areItemStackTagsEqual(stackA, stackB);
-	}
-
-	public static EnumActionResult useItem(World world, EntityPlayer player, ItemStack stack, BlockPos pos,
-			EnumHand hand, EnumFacing facing) {
-		EnumActionResult result =
-				stack.getItem().onItemUseFirst(player, world, pos, facing, 0.5F, 0.5F, 0.5F, hand);
-
-		if (result == EnumActionResult.PASS) {
-			result = stack.getItem().onItemUse(player, world, pos, hand, facing, 0.5F, 0.5F, 0.5F);
-		}
-		return result;
-	}
+    public static ActionResult useItem(PlayerEntity player, ItemStack stack, BlockPos pos,
+            Direction facing) {
+        player.setEquippedStack(EquipmentSlot.HAND_MAIN, stack);
+        ActionResult result = stack.useOnBlock(new ItemUsageContext(player, stack,
+                new BlockHitResult(new Vec3d(0.5D, 0.5D, 0.5D), facing, pos, true)));
+        player.setEquippedStack(EquipmentSlot.HAND_MAIN, ItemStack.EMPTY);
+        return result;
+    }
 }
