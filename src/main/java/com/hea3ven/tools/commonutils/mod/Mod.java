@@ -146,7 +146,7 @@ public class Mod {
         ItemGroup tab = new ItemGroup(-1, name) {
             @Override
             @Environment(EnvType.CLIENT)
-            public ItemStack getIconItem() {
+            public ItemStack createIcon() {
                 return icon;
             }
         };
@@ -220,7 +220,7 @@ public class Mod {
         }
         return new PlayerEntity(world, fakePlayerProfile) {
             @Override
-            public boolean method_7325() {
+            public boolean isSpectator() {
                 return false;
             }
 
