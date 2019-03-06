@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Throwables;
-
 import com.hea3ven.tools.commonutils.mod.info.BlockInfo;
 import com.hea3ven.tools.commonutils.mod.info.ContainerInfo;
 import com.hea3ven.tools.commonutils.mod.info.EnchantmentInfo;
@@ -23,14 +21,14 @@ public class ModComposite extends Mod {
         super(modId);
     }
 
-    public void addModule(String name, String modId, String clsName) {
+    public final void addModule(String name, String modId, String clsName) {
         // TODO: Conditional loading
         //		if (!Loader.isModLoaded(modId))
         //			return;
         addModule(name, clsName);
     }
 
-    public void addModule(String name, String clsName) {
+    public final void addModule(String name, String clsName) {
         boolean singleton = false;
         if (clsName.endsWith(".INSTANCE")) {
             singleton = true;
@@ -40,12 +38,9 @@ public class ModComposite extends Mod {
         try {
             //			cls = Loader.instance().getModClassLoader().loadClass(clsName).asSubclass(ModModule.class);
             ClassLoader targetClassLoader = FabricLauncherBase.getLauncher().getTargetClassLoader();
-            cls = targetClassLoader
-                    .loadClass(clsName)
-                    .asSubclass(ModModule.class);
+            cls = targetClassLoader.loadClass(clsName).asSubclass(ModModule.class);
         } catch (ClassNotFoundException e) {
-            Throwables.propagate(e);
-            return;
+            throw new ModuleLoadingException(e);
         }
         ModModule child;
         try {
@@ -55,7 +50,7 @@ public class ModComposite extends Mod {
                 child = (ModModule) cls.getField("INSTANCE").get(null);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Could not build the module " + name, e);
+            throw new ModuleLoadingException("Could not build the module " + name, e);
         }
         children.put(name, child);
         child.setParent(this);
@@ -76,17 +71,17 @@ public class ModComposite extends Mod {
 
     @Override
     public void onPreInit() {
-        children.values().stream().forEach(Mod::onPreInit);
+        children.values().forEach(Mod::onPreInit);
     }
 
     @Override
     public void onInit() {
-        children.values().stream().forEach(Mod::onInit);
+        children.values().forEach(Mod::onInit);
     }
 
     @Override
     public void onPostInit() {
-        children.values().stream().forEach(Mod::onPostInit);
+        children.values().forEach(Mod::onPostInit);
     }
 
     @Override

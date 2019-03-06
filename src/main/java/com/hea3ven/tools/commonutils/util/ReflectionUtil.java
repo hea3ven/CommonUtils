@@ -1,8 +1,11 @@
 package com.hea3ven.tools.commonutils.util;
 
+import javax.annotation.Nonnull;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.Predicate;
 
 public class ReflectionUtil {
     @FunctionalInterface
@@ -54,6 +57,28 @@ public class ReflectionUtil {
             if (field != null) {
                 field.setAccessible(false);
             }
+        }
+    }
+
+    @Nonnull
+    public static Class<?> findNestedClass(Class<?> targetClass, Predicate<Class<?>> condition) {
+        Class<?>[] classes = targetClass.getDeclaredClasses();
+        for (Class<?> aClass : classes) {
+            if (condition.test(aClass)) {
+                return aClass;
+            }
+        }
+        throw new RuntimeException("Could not find nested class");
+    }
+
+    @Nonnull
+    public static <T> T newInstance(Class<T> targetClass, Class<?>[] argsClasses, Object[] args) {
+        try {
+            Constructor<T> constructor = targetClass.getDeclaredConstructor(argsClasses);
+            constructor.setAccessible(true);
+            return constructor.newInstance(args);
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            throw new RuntimeException(e);
         }
     }
 }

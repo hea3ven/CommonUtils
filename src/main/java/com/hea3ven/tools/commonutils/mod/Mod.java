@@ -2,16 +2,13 @@ package com.hea3ven.tools.commonutils.mod;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.screen.ContainerScreenFactory;
-import net.fabricmc.fabric.api.container.ContainerFactory;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,6 +17,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -40,6 +38,8 @@ public class Mod {
 
     private String modId;
 
+    private boolean initialized = false;
+
     private Map<String, BlockInfo> blocks = Maps.newHashMap();
     private Map<String, ContainerInfo> containers = Maps.newHashMap();
     private Map<String, ScreenInfo> screens = Maps.newHashMap();
@@ -48,9 +48,6 @@ public class Mod {
     private Map<String, ItemGroupInfo> creativeTabs = Maps.newHashMap();
 
     //    ConfigManager cfgMgr;
-
-    //	protected GenericGuiHandler guiHandler = new GenericGuiHandler();
-    //	private IGuiHandler overrideGuiHandler;
 
     //	ConfigManagerBuilder cfgMgrBuilder;
     //	private SimpleNetworkWrapper netChannel;
@@ -85,6 +82,14 @@ public class Mod {
         return blocks;
     }
 
+    public BlockInfo getBlockInfo(String name) {
+        BlockInfo blockInfo = getBlocks().get(name);
+        if (blockInfo == null) {
+            throw new NoSuchInfoException(name);
+        }
+        return blockInfo;
+    }
+
     @Deprecated
     protected final void addBlock(String name, Block block) {
         addBlock(name, block, new BlockItem(block, new Item.Settings()));
@@ -99,16 +104,16 @@ public class Mod {
     }
 
     protected final <T extends BlockEntity> void addBlock(String name, Block block, ItemGroup group,
-            Function<Supplier<BlockEntityType<T>>, Supplier<T>> blockEntitySupplier) {
-        this.addBlock(name, block, new BlockItem(block, new Item.Settings().itemGroup(group)),
+            Function<BlockEntityType<T>, T> blockEntitySupplier) {
+        addBlock(name, block, new BlockItem(block, new Item.Settings().itemGroup(group)),
                 blockEntitySupplier);
     }
 
     protected final <T extends BlockEntity> void addBlock(String name, Block block, BlockItem item,
-            Function<Supplier<BlockEntityType<T>>, Supplier<T>> blockEntitySupplier) {
+            Function<BlockEntityType<T>, T> blockEntitySupplier) {
         BlockInfo blockInfo = new BlockInfo(id(name), block, item);
-        blockInfo.setBlockEntityType(new BlockEntityType<T>(blockEntitySupplier.apply(
-                () -> (BlockEntityType<T>) blockInfo.getBlockEntityType()), null));
+        blockInfo.setBlockEntityType(new BlockEntityType<>(
+                () -> blockEntitySupplier.apply(blockInfo.getBlockEntityType()), null));
         blocks.put(name, blockInfo);
     }
 
@@ -116,7 +121,16 @@ public class Mod {
         return containers;
     }
 
-    protected final void addContainer(String name, ContainerFactory factory) {
+    public ContainerInfo getContainerInfo(String name) {
+        ContainerInfo containerInfo = getContainers().get(name);
+        if (containerInfo == null) {
+            throw new NoSuchInfoException(name);
+        }
+        return containerInfo;
+    }
+
+    protected final void addContainer(String name,
+            BiFunction<Integer, PlayerInventory, Object> factory) {
         containers.put(name, new ContainerInfo(id(name), factory));
     }
 
@@ -126,12 +140,29 @@ public class Mod {
     }
 
     @Environment(EnvType.CLIENT)
-    protected final void addScreen(String name, ContainerScreenFactory factory) {
+    public ScreenInfo getScreenInfo(String name) {
+        ScreenInfo screenInfo = getScreens().get(name);
+        if (screenInfo == null) {
+            throw new NoSuchInfoException(name);
+        }
+        return screenInfo;
+    }
+
+    @Environment(EnvType.CLIENT)
+    protected final void addScreen(String name, ScreenFactory factory) {
         screens.put(name, new ScreenInfo(id(name), factory));
     }
 
     public Map<String, ItemInfo> getItems() {
         return items;
+    }
+
+    public ItemInfo getItemInfo(String name) {
+        ItemInfo itemInfo = getItems().get(name);
+        if (itemInfo == null) {
+            throw new NoSuchInfoException(name);
+        }
+        return itemInfo;
     }
 
     public void addItem(String name, Item item) {
@@ -140,6 +171,14 @@ public class Mod {
 
     public Map<String, ItemGroupInfo> getCreativeTabs() {
         return creativeTabs;
+    }
+
+    public ItemGroupInfo getCreativeTabInfo(String name) {
+        ItemGroupInfo itemGroupInfo = getCreativeTabs().get(name);
+        if (itemGroupInfo == null) {
+            throw new NoSuchInfoException(name);
+        }
+        return itemGroupInfo;
     }
 
     public void addCreativeTab(String name, final ItemStack icon) {
@@ -157,12 +196,22 @@ public class Mod {
         return enchantments;
     }
 
+    public EnchantmentInfo getEnchantmentInfo(String name) {
+        EnchantmentInfo enchantmentInfo = enchantments.get(name);
+        if (enchantmentInfo == null) {
+            throw new NoSuchInfoException(name);
+        }
+        return enchantmentInfo;
+    }
+
     public void addEnchantment(String name, Enchantment enchantment) {
         enchantments.put(name, new EnchantmentInfo(id(name), enchantment));
     }
 
-    protected void registerNetworkPackets() {
-    }
+    // TODO: network packets
+
+    //    protected void registerNetworkPackets() {
+    //    }
 
     //    public <REQ extends IMessage, REPLY extends IMessage> void addNetworkPacket(
     //            Class<? extends IMessageHandler<REQ, REPLY>> messageHandler,
@@ -176,8 +225,10 @@ public class Mod {
     //        return netChannel;
     //    }
 
-    protected void registerKeyBindings() {
-    }
+    // TODO: key bindings
+
+    //    protected void registerKeyBindings() {
+    //    }
 
     //    public void addKeyBinding(String description, int keyCode, String category,
     //            Consumer<KeyInputEvent> callback) {
@@ -202,8 +253,10 @@ public class Mod {
     //        keyBindingManager.addScrollWheelBinding(item, callback);
     //    }
 
-    protected void registerCommands() {
-    }
+    // TODO: commands
+
+    //    protected void registerCommands() {
+    //    }
 
     //    public void addCommand(ICommand cmd) {
     //        if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
@@ -215,7 +268,7 @@ public class Mod {
     }
 
     public PlayerEntity getFakePlayer(World world) {
-        if(fakePlayerProfile == null) {
+        if (fakePlayerProfile == null) {
             fakePlayerProfile = new GameProfile(null, "[" + getModId() + "]");
         }
         return new PlayerEntity(world, fakePlayerProfile) {

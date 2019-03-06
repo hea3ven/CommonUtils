@@ -1,6 +1,7 @@
 package com.hea3ven.tools.commonutils.container;
 
 import net.minecraft.container.Container;
+import net.minecraft.container.ContainerType;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -9,6 +10,10 @@ public abstract class ContainerBase extends Container {
 
     protected ContainerBase(int syncId) {
         super(null, syncId);
+    }
+
+    public ContainerBase(int syncId, ContainerType<?> containerType) {
+        super(containerType, syncId);
     }
 
     public void addSlots(Inventory inv, int slotOff, int xOff, int yOff, int xSize, int ySize) {
@@ -27,5 +32,4 @@ public abstract class ContainerBase extends Container {
     public boolean canUse(PlayerEntity playerEntity) {
         return true;
     }
-
 }

@@ -3,6 +3,7 @@ package com.hea3ven.tools.commonutils.container;
 import java.util.Collections;
 import java.util.Set;
 
+import net.minecraft.container.ContainerType;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,6 +21,10 @@ public class GenericContainer extends ContainerBase {
 
     public GenericContainer(int syncId) {
         super(syncId);
+    }
+
+    public GenericContainer(int syncId, ContainerType<?> containerType) {
+        super(syncId, containerType);
     }
 
     public final GenericContainer addGenericSlots(Inventory inv, int slotOff, int xOff, int yOff,

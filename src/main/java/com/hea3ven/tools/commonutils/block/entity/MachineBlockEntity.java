@@ -5,8 +5,7 @@ import net.minecraft.block.entity.LockableContainerBlockEntity;
 
 public abstract class MachineBlockEntity extends LockableContainerBlockEntity {
 
-	public MachineBlockEntity(BlockEntityType<?> blockEntityType) {
-		super(blockEntityType);
-	}
-
+    public MachineBlockEntity(BlockEntityType<?> blockEntityType) {
+        super(blockEntityType);
+    }
 }

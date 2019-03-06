@@ -1,7 +1,5 @@
 package com.hea3ven.tools.commonutils.mod.fabric;
 
-import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
@@ -13,19 +11,13 @@ import net.minecraft.text.TextComponent;
 
 import com.hea3ven.tools.commonutils.mod.Mod;
 import com.hea3ven.tools.commonutils.mod.ScreenFactory;
-import com.hea3ven.tools.commonutils.mod.info.ContainerInfo;
-import com.hea3ven.tools.commonutils.mod.info.ScreenInfo;
 import com.hea3ven.tools.commonutils.util.ReflectionUtil;
 
-public class FabricClientModHandler {
+public class FabricServerModHandler {
 
-    static public void onInitializeClient(Mod mod) {
+    static public void onInitializeServer(Mod mod) {
         mod.onPreInit();
         FabricModHandler.onInitialize(mod);
-        for (ScreenInfo screenInfo : mod.getScreens().values()) {
-            ContainerInfo containerInfo = mod.getContainerInfo(screenInfo.getId().getPath());
-            registerScreenFactory(containerInfo.getType(), screenInfo.getFactory());
-        }
         mod.onInit();
         mod.onPostInit();
     }
@@ -35,7 +27,9 @@ public class FabricClientModHandler {
         Class<?> factoryIface =
                 ReflectionUtil.findNestedClass(ContainerScreenRegistry.class, Class::isInterface);
 
-        Object screenFactory = createScreenFactory(factoryIface, factory);
+        Object screenFactory =
+                ReflectionUtil.newInstance(ContainerType.class, new Class[] {factoryIface},
+                        new Object[] {createScreenFactory(factoryIface, factory)});
 
         ReflectionUtil.reflectField(ContainerScreenRegistry.class, "GUI_FACTORIES", "asd",
                 field -> {
@@ -48,20 +42,7 @@ public class FabricClientModHandler {
     @SuppressWarnings("unchecked")
     private static Object createScreenFactory(Class<?> factoryIface, ScreenFactory factory) {
         return Proxy.newProxyInstance(factoryIface.getClassLoader(), new Class[] {factoryIface},
-                (proxy, method, args) -> {
-                    if ("create".equals(method.getName())) {
-                        return factory.create((Container) args[0], (PlayerInventory) args[1],
-                                (TextComponent) args[2]);
-                    } else {
-                        Constructor<Lookup> constructor =
-                                Lookup.class.getDeclaredConstructor(Class.class);
-                        constructor.setAccessible(true);
-                        return constructor.newInstance(factoryIface)
-                                .in(factoryIface)
-                                .unreflectSpecial(method, factoryIface)
-                                .bindTo(proxy)
-                                .invokeWithArguments(args);
-                    }
-                });
+                (proxy, method, args) -> factory.create((Container) args[0],
+                        (PlayerInventory) args[1], (TextComponent) args[2]));
     }
 }

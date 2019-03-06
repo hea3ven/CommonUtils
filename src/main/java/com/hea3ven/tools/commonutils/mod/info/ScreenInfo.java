@@ -1,15 +1,15 @@
 package com.hea3ven.tools.commonutils.mod.info;
 
-import net.fabricmc.fabric.api.client.screen.ContainerScreenFactory;
-
 import net.minecraft.util.Identifier;
+
+import com.hea3ven.tools.commonutils.mod.ScreenFactory;
 
 public class ScreenInfo {
 
     private final Identifier id;
-    private final ContainerScreenFactory factory;
+    private final ScreenFactory factory;
 
-    public ScreenInfo(Identifier id, ContainerScreenFactory factory) {
+    public ScreenInfo(Identifier id, ScreenFactory factory) {
         this.id = id;
         this.factory = factory;
     }
@@ -18,7 +18,7 @@ public class ScreenInfo {
         return id;
     }
 
-    public ContainerScreenFactory getFactory() {
+    public ScreenFactory getFactory() {
         return factory;
     }
 }
