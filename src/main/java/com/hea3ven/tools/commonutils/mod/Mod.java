@@ -197,7 +197,7 @@ public class Mod {
     }
 
     public EnchantmentInfo getEnchantmentInfo(String name) {
-        EnchantmentInfo enchantmentInfo = enchantments.get(name);
+        EnchantmentInfo enchantmentInfo = getEnchantments().get(name);
         if (enchantmentInfo == null) {
             throw new NoSuchInfoException(name);
         }
