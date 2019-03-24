@@ -31,7 +31,8 @@ public class ReflectionUtil {
             mthd.setAccessible(true);
             handler.handle(mthd);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Could not call onSwapCraft");
+            throw new RuntimeException(
+                    String.format("Could not reflect method %s[%s]", deobfName, obfName));
         } finally {
             if (mthd != null) {
                 mthd.setAccessible(false);
@@ -52,7 +53,8 @@ public class ReflectionUtil {
             field.setAccessible(true);
             handler.handle(field);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException("Could not call onSwapCraft");
+            throw new RuntimeException(
+                    String.format("Could not reflect field %s[%s]", deobfName, obfName));
         } finally {
             if (field != null) {
                 field.setAccessible(false);

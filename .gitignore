@@ -2,6 +2,8 @@
 .*
 *.launch
 *.iml
+*.ipr
+*.iws
 /art
 /research
 scratchpad.txt

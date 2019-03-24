@@ -42,7 +42,7 @@ val changelog: String? by project
 val github_release_token: String? by project
 val maven_url: String? by project
 
-version =  "3.0.0-$frameworkSelected-$buildNo"
+version =  "$project_version-$frameworkSelected-$buildNo"
 group = "com.hea3ven.tools.commonutils"
 
 base {

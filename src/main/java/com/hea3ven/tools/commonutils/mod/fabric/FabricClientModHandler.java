@@ -37,7 +37,7 @@ public class FabricClientModHandler {
 
         Object screenFactory = createScreenFactory(factoryIface, factory);
 
-        ReflectionUtil.reflectField(ContainerScreenRegistry.class, "GUI_FACTORIES", "asd",
+        ReflectionUtil.reflectField(ContainerScreenRegistry.class, "GUI_FACTORIES", "field_17409",
                 field -> {
                     Map<ContainerType, Object> screenFactories =
                             (Map<ContainerType, Object>) field.get(null);
