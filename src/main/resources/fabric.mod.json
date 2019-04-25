@@ -1,0 +1,21 @@
+{
+    "schemaVersion": 1,
+    "id": "commonutils",
+    "name": "CommonUtils",
+    "description": "A library to create mods.",
+    "version": "@version@",
+    "authors": [
+        "Hea3veN <hea3venmc@gmail.com>"
+    ],
+    "contact": {
+        "sources": "https://github.com/Hea3veN/Unstainer"
+    },
+    "environment": "*",
+    "entrypoints": {
+    },
+    "mixins": [
+    ],
+    "requires": {
+        "fabric-lib": "@version_fabric_lib@"
+    }
+}

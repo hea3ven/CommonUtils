@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -35,7 +36,7 @@ public class ItemStackUtil {
     public static ActionResult useItem(PlayerEntity player, ItemStack stack, BlockPos pos,
             Direction facing) {
         player.setEquippedStack(EquipmentSlot.HAND_MAIN, stack);
-        ActionResult result = stack.useOnBlock(new ItemUsageContext(player, stack,
+        ActionResult result = stack.useOnBlock(new ItemUsageContext(player, Hand.MAIN,
                 new BlockHitResult(new Vec3d(0.5D, 0.5D, 0.5D), facing, pos, true)));
         player.setEquippedStack(EquipmentSlot.HAND_MAIN, ItemStack.EMPTY);
         return result;

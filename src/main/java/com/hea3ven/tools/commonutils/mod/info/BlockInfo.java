@@ -3,7 +3,7 @@ package com.hea3ven.tools.commonutils.mod.info;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.block.BlockItem;
+import net.minecraft.item.BlockItem;
 import net.minecraft.util.Identifier;
 
 public class BlockInfo {
