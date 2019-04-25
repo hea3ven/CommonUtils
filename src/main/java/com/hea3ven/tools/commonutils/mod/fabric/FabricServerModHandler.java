@@ -3,11 +3,11 @@ package com.hea3ven.tools.commonutils.mod.fabric;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-import net.minecraft.client.gui.ContainerScreenRegistry;
+import net.minecraft.client.gui.screen.ContainerScreenRegistry;
 import net.minecraft.container.Container;
 import net.minecraft.container.ContainerType;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.TextComponent;
+import net.minecraft.network.chat.TextComponent;
 
 import com.hea3ven.tools.commonutils.mod.Mod;
 import com.hea3ven.tools.commonutils.mod.ScreenFactory;

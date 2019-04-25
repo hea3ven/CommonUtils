@@ -5,11 +5,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-import net.minecraft.client.gui.ContainerScreenRegistry;
+import net.minecraft.client.gui.screen.ContainerScreenRegistry;
 import net.minecraft.container.Container;
 import net.minecraft.container.ContainerType;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import com.hea3ven.tools.commonutils.mod.Mod;
 import com.hea3ven.tools.commonutils.mod.ScreenFactory;
@@ -51,7 +52,7 @@ public class FabricClientModHandler {
                 (proxy, method, args) -> {
                     if ("create".equals(method.getName())) {
                         return factory.create((Container) args[0], (PlayerInventory) args[1],
-                                (TextComponent) args[2]);
+                                (Component) args[2]);
                     } else {
                         Constructor<Lookup> constructor =
                                 Lookup.class.getDeclaredConstructor(Class.class);

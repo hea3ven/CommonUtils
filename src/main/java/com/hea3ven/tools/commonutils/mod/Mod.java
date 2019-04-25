@@ -18,10 +18,10 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.block.BlockItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -112,8 +112,11 @@ public class Mod {
     protected final <T extends BlockEntity> void addBlock(String name, Block block, BlockItem item,
             Function<BlockEntityType<T>, T> blockEntitySupplier) {
         BlockInfo blockInfo = new BlockInfo(id(name), block, item);
-        blockInfo.setBlockEntityType(new BlockEntityType<>(
-                () -> blockEntitySupplier.apply(blockInfo.getBlockEntityType()), null));
+        blockInfo.setBlockEntityTypeBuilder(BlockEntityType.Builder.create(
+                () -> blockEntitySupplier.apply(blockInfo.getBlockEntityType()), block));
+        //                new BlockEntityType<>(
+        //                () -> blockEntitySupplier.apply(blockInfo.getBlockEntityType()),
+        //                Sets.newHashSet(block), null));
         blocks.put(name, blockInfo);
     }
 

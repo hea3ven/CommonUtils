@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 
 import net.minecraft.container.ContainerType;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
 
 import com.hea3ven.tools.commonutils.mod.Mod;
@@ -21,10 +22,11 @@ class FabricModHandler {
             Registry.register(Registry.BLOCK, blockInfo.getId(), blockInfo.getBlock());
             Registry.register(Registry.ITEM, blockInfo.getId(), blockInfo.getItem());
             // TODO: check if it's needed
-            // blockInfo.getItem().registerBlockItemMap(Item.BLOCK_ITEM_MAP, blockInfo.getItem());
-            if (blockInfo.getBlockEntityType() != null) {
-                Registry.register(Registry.BLOCK_ENTITY, blockInfo.getId(),
-                        blockInfo.getBlockEntityType());
+            blockInfo.getItem().registerBlockItemMap(Item.BLOCK_ITEM_MAP, blockInfo.getItem());
+            if (blockInfo.getBlockEntityTypeBuilder() != null) {
+                blockInfo.setBlockEntityType(
+                        Registry.register(Registry.BLOCK_ENTITY, blockInfo.getId(),
+                                blockInfo.getBlockEntityTypeBuilder().build(null)));
             }
         }
         for (ContainerInfo containerInfo : mod.getContainers().values()) {
