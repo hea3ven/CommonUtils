@@ -29,7 +29,7 @@ public class ItemStackUtil {
     }
 
     public static boolean areStacksCombinable(ItemStack stackA, ItemStack stackB) {
-        return ItemStack.areEqualIgnoreTags(stackA, stackB) && ItemStack.areTagsEqual(stackA,
+        return ItemStack.areItemsEqualIgnoreDamage(stackA, stackB) && ItemStack.areTagsEqual(stackA,
                 stackB);
     }
 

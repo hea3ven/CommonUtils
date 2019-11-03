@@ -96,7 +96,7 @@ public class Mod {
     }
 
     protected final void addBlock(String name, Block block, ItemGroup group) {
-        addBlock(name, block, new BlockItem(block, new Item.Settings().itemGroup(group)));
+        addBlock(name, block, new BlockItem(block, new Item.Settings().group(group)));
     }
 
     protected final void addBlock(String name, Block block, BlockItem item) {
@@ -105,7 +105,7 @@ public class Mod {
 
     protected final <T extends BlockEntity> void addBlock(String name, Block block, ItemGroup group,
             Function<BlockEntityType<T>, T> blockEntitySupplier) {
-        addBlock(name, block, new BlockItem(block, new Item.Settings().itemGroup(group)),
+        addBlock(name, block, new BlockItem(block, new Item.Settings().group(group)),
                 blockEntitySupplier);
     }
 

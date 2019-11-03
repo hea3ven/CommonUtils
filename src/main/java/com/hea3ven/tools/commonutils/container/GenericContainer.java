@@ -98,7 +98,7 @@ public class GenericContainer extends ContainerBase {
                 slot.markDirty();
             }
 
-            if (stack.getAmount() == resultStack.getAmount()) {
+            if (stack.getCount() == resultStack.getCount()) {
                 return ItemStack.EMPTY;
             }
 

@@ -5,12 +5,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-import net.minecraft.client.gui.screen.ContainerScreenRegistry;
+import net.minecraft.client.gui.screen.Screens;
 import net.minecraft.container.Container;
 import net.minecraft.container.ContainerType;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.text.Text;
 
 import com.hea3ven.tools.commonutils.mod.Mod;
 import com.hea3ven.tools.commonutils.mod.ScreenFactory;
@@ -33,17 +32,15 @@ public class FabricClientModHandler {
 
     @SuppressWarnings("unchecked")
     private static void registerScreenFactory(ContainerType containerType, ScreenFactory factory) {
-        Class<?> factoryIface =
-                ReflectionUtil.findNestedClass(ContainerScreenRegistry.class, Class::isInterface);
+        Class<?> factoryIface = ReflectionUtil.findNestedClass(Screens.class, Class::isInterface);
 
         Object screenFactory = createScreenFactory(factoryIface, factory);
 
-        ReflectionUtil.reflectField(ContainerScreenRegistry.class, "GUI_FACTORIES", "field_17409",
-                field -> {
-                    Map<ContainerType, Object> screenFactories =
-                            (Map<ContainerType, Object>) field.get(null);
-                    screenFactories.put(containerType, screenFactory);
-                });
+        ReflectionUtil.reflectField(Screens.class, "PROVIDERS", "field_17409", field -> {
+            Map<ContainerType, Object> screenFactories =
+                    (Map<ContainerType, Object>) field.get(null);
+            screenFactories.put(containerType, screenFactory);
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -52,7 +49,7 @@ public class FabricClientModHandler {
                 (proxy, method, args) -> {
                     if ("create".equals(method.getName())) {
                         return factory.create((Container) args[0], (PlayerInventory) args[1],
-                                (Component) args[2]);
+                                (Text) args[2]);
                     } else {
                         Constructor<Lookup> constructor =
                                 Lookup.class.getDeclaredConstructor(Class.class);

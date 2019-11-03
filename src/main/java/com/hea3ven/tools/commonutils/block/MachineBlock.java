@@ -31,10 +31,10 @@ public abstract class MachineBlock extends BlockWithEntity {
 
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity player,
             ItemStack stack) {
-        if (stack.hasDisplayName()) {
+        if (stack.hasCustomName()) {
             MachineBlockEntity entity = WorldHelper.getBlockEntity(world, pos);
             if (entity != null)
-                entity.setCustomName(stack.getDisplayName());
+                entity.setCustomName(stack.getName());
         }
     }
 

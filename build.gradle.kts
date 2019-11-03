@@ -19,7 +19,7 @@ buildscript {
             }
     }
     dependencies {
-        classpath("net.fabricmc:fabric-loom:0.2.2-SNAPSHOT")
+        classpath("net.fabricmc:fabric-loom:0.2.5-SNAPSHOT")
     }
 }
 
@@ -61,9 +61,9 @@ dependencies {
     if (frameworkSelected == "fabric") {
         "minecraft"("com.mojang:minecraft:$version_mc_jar")
         "mappings"("net.fabricmc:yarn:$version_mc_mappings")
-        "modCompile"("net.fabricmc:fabric-loader:$version_fabric_loader")
+        "modImplementation"("net.fabricmc:fabric-loader:$version_fabric_loader")
 
-        "modCompile"("net.fabricmc.fabric-api:fabric-lib:$version_fabric_lib")
+        "modImplementation"("net.fabricmc.fabric-api:fabric-lib:$version_fabric_lib")
     }
 
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")

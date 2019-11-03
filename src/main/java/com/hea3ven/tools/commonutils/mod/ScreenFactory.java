@@ -7,10 +7,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.ContainerProvider;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
 public interface ScreenFactory<T extends Container, U extends Screen & ContainerProvider<T>> {
-    U create(T container, PlayerInventory playerInv, Component name);
+    U create(T container, PlayerInventory playerInv, Text name);
 }
