@@ -19,7 +19,7 @@ buildscript {
             }
     }
     dependencies {
-        classpath("net.fabricmc:fabric-loom:0.2.5-SNAPSHOT")
+        classpath("net.fabricmc:fabric-loom:0.2.6-SNAPSHOT")
     }
 }
 
@@ -112,13 +112,14 @@ publishing {
             artifactId = "h3nt-commonutils"
             from(components["java"])
             artifact(tasks["sourcesJar"])
+            artifact(tasks["remapJar"])
             pom {
                 name.set("CommonUtils")
-                withXml {
+                /*withXml {
                     val pom = asNode()
                     val deps = pom.get("dependencies") as NodeList
                     deps.forEach { pom.remove(it as Node) }
-                }
+                }*/
             }
         }
     }
