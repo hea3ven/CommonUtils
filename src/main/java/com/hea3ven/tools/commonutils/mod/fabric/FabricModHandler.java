@@ -25,7 +25,7 @@ class FabricModHandler {
             blockInfo.getItem().appendBlocks(Item.BLOCK_ITEMS, blockInfo.getItem());
             if (blockInfo.getBlockEntityTypeBuilder() != null) {
                 blockInfo.setBlockEntityType(
-                        Registry.register(Registry.BLOCK_ENTITY, blockInfo.getId(),
+                        Registry.register(Registry.BLOCK_ENTITY_TYPE, blockInfo.getId(),
                                 blockInfo.getBlockEntityTypeBuilder().build(null)));
             }
         }

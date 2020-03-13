@@ -8,6 +8,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
@@ -40,8 +41,7 @@ public abstract class MachineBlock extends BlockWithEntity {
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player,
-            Hand hand, BlockHitResult hitResult) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         if (!world.isClient) {
             MachineBlockEntity entity = WorldHelper.getBlockEntity(world, pos);
             if (entity != null) {
@@ -49,7 +49,7 @@ public abstract class MachineBlock extends BlockWithEntity {
                 //         playerEntity_1.increaseStat(Stats.INTERACT_WITH_FURNACE);
             }
         }
-        return true;
+        return ActionResult.SUCCESS;
     }
 
     @Override

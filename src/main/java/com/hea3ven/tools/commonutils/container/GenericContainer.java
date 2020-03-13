@@ -52,7 +52,7 @@ public class GenericContainer extends ContainerBase {
 
     public final GenericContainer addPlayerSlots(PlayerInventory playerInv, int xOff, int yOff,
             Set<Integer> lockedSlots) {
-        playerSlotsStart = slotList.size();
+        playerSlotsStart = slots.size();
         this.playerInv = playerInv;
         addSlots(playerInv, 9, xOff, yOff, 9, 3);
         addSlots(xOff, yOff + 3 * 18 + 4, 9, 1, (slot, x, y) -> {
@@ -71,7 +71,7 @@ public class GenericContainer extends ContainerBase {
     @Override
     public ItemStack transferSlot(PlayerEntity player, int int_1) {
         ItemStack resultStack = ItemStack.EMPTY;
-        Slot slot = slotList.get(int_1);
+        Slot slot = slots.get(int_1);
         if (slot != null && slot.hasStack()) {
             ItemStack stack = slot.getStack();
             resultStack = stack.copy();

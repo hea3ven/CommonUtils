@@ -26,7 +26,7 @@ public class InventoryExtraUtil {
             String tagName) {
         ListTag list = tag.getList(tagName, 10);
         for (int i = 0; i < list.size(); i++) {
-            CompoundTag slotTag = list.getCompoundTag(i);
+            CompoundTag slotTag = list.getCompound(i);
             int slot = slotTag.getByte("Slot");
             if (slot >= 0 && slot < inventory.size()) {
                 inventory.set(slot, ItemStack.fromTag(slotTag));

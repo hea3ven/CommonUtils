@@ -16,6 +16,5 @@
     "mixins": [
     ],
     "depends": {
-        "fabric-lib": "@version_fabric_lib@"
     }
 }

@@ -35,10 +35,10 @@ public class ItemStackUtil {
 
     public static ActionResult useItem(PlayerEntity player, ItemStack stack, BlockPos pos,
             Direction facing) {
-        player.setEquippedStack(EquipmentSlot.MAINHAND, stack);
+        player.equipStack(EquipmentSlot.MAINHAND, stack);
         ActionResult result = stack.useOnBlock(new ItemUsageContext(player, Hand.MAIN_HAND,
                 new BlockHitResult(new Vec3d(0.5D, 0.5D, 0.5D), facing, pos, true)));
-        player.setEquippedStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+        player.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         return result;
     }
 }
